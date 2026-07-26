@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FLYF® — Particle Field / An Interactive WebGL Experience</title>
-  <meta name="description" content="FLYF — an experimental WebGL playground. 70,000 GPU particles morphing through scroll-driven chapters. 一场由代码驱动的粒子实验。">
+  <title>FLYF® — 创意开发者 Creative Developer</title>
+  <meta name="description" content="你好，我是 FLYF — 创意开发者，在 AI、Web 与嵌入式硬件之间探索。Creative developer working across AI, real-time web graphics and embedded hardware.">
   <meta name="theme-color" content="#070708">
-  <meta property="og:title" content="FLYF® — Particle Field">
-  <meta property="og:description" content="An interactive particle experience built with Three.js. Scroll to reshape the field.">
+  <meta property="og:title" content="FLYF® — 创意开发者 Creative Developer">
+  <meta property="og:description" content="Personal site of FLYF — 70,000 GPU particles, four scroll chapters, one developer. 你好，我是 FLYF。">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://aiflyf.github.io/FLYFWEB/">
   <link rel="canonical" href="https://aiflyf.github.io/FLYFWEB/">
@@ -43,8 +43,8 @@
     </a>
     <nav class="site-nav mono" aria-label="Sections">
       <a href="#index" data-target="0" data-hover>INDEX</a>
-      <a href="#manifesto" data-target="1" data-hover>MANIFESTO</a>
-      <a href="#craft" data-target="2" data-hover>CRAFT</a>
+      <a href="#about" data-target="1" data-hover>ABOUT</a>
+      <a href="#work" data-target="2" data-hover>WORK</a>
       <a href="#contact" data-target="3" data-hover>CONTACT</a>
     </nav>
     <div class="head-meta mono">
@@ -57,8 +57,8 @@
   <!-- Side chapter index -->
   <nav class="side-index mono" aria-label="Chapter index">
     <button data-target="0" data-hover><span class="si-num">00</span><span class="si-label">INDEX</span></button>
-    <button data-target="1" data-hover><span class="si-num">01</span><span class="si-label">MANIFESTO</span></button>
-    <button data-target="2" data-hover><span class="si-num">02</span><span class="si-label">CRAFT</span></button>
+    <button data-target="1" data-hover><span class="si-num">01</span><span class="si-label">ABOUT</span></button>
+    <button data-target="2" data-hover><span class="si-num">02</span><span class="si-label">WORK</span></button>
     <button data-target="3" data-hover><span class="si-num">03</span><span class="si-label">CONTACT</span></button>
   </nav>
 
@@ -67,75 +67,78 @@
     <!-- 00 / HERO -->
     <section class="sec sec-hero" id="index" data-sec="0">
       <div class="hero-inner">
-        <p class="eyebrow mono" data-load>EXPERIMENT NO.001 — 粒子场 / PARTICLE FIELD</p>
+        <p class="eyebrow mono" data-load>你好 HELLO — 我是 FLYF · 创意开发者 / PORTFOLIO 2026</p>
         <h1 class="hero-title" aria-label="FLYF WEB">
           <span class="ht-row"><span class="ht-line" data-load-line>FLYF</span></span>
           <span class="ht-row"><span class="ht-line ht-outline" data-load-line>WEB<span class="ht-sup"><i data-lucide="asterisk"></i></span></span></span>
         </h1>
         <div class="hero-foot" data-load>
-          <p class="mono"><span id="statParticles">——</span> PARTICLES / WEBGL / 60FPS TARGET</p>
+          <div>
+            <p class="mono">CREATIVE DEVELOPER — AI · WEB · HARDWARE</p>
+            <p class="mono"><span id="statParticles">——</span> PARTICLES / WEBGL / 60FPS TARGET</p>
+          </div>
           <p class="mono scroll-hint"><i data-lucide="mouse"></i> SCROLL 滚动探索</p>
         </div>
       </div>
     </section>
 
-    <!-- 01 / MANIFESTO -->
-    <section class="sec sec-manifesto" id="manifesto" data-sec="1">
-      <div class="sec-head mono" data-reveal>01 — MANIFESTO 宣言</div>
+    <!-- 01 / ABOUT -->
+    <section class="sec sec-manifesto" id="about" data-sec="1">
+      <div class="sec-head mono" data-reveal>01 — ABOUT 关于我</div>
       <div data-skew>
         <h2 class="statement">
-          <span class="st-line" data-reveal style="--d:0s">THE BROWSER</span>
-          <span class="st-line" data-reveal style="--d:.09s">IS A <em class="serif">canvas</em>,</span>
-          <span class="st-line" data-reveal style="--d:.18s">CODE IS THE <em class="serif">brush</em>.</span>
+          <span class="st-line" data-reveal style="--d:0s">I BUILD THINGS</span>
+          <span class="st-line" data-reveal style="--d:.09s">THAT <em class="serif">think</em></span>
+          <span class="st-line" data-reveal style="--d:.18s">&amp; <em class="serif">move</em>.</span>
         </h2>
       </div>
       <p class="side-note mono" data-reveal style="--d:.3s">
-        每一帧都是一次绘画 — 数万粒子在 GPU 上呼吸、流动、重组。<br>
-        Every frame is a painting: a living field of particles,
-        reshaped by your scroll and cursor in real time.
+        你好，我是 FLYF — 一名创意开发者。<br>
+        我在 AI、Web 与嵌入式硬件之间探索：分享模型、
+        打造实时图形实验、折腾 ESP32。<br>
+        Creative developer exploring the space between AI,
+        real-time web graphics and embedded hardware.
       </p>
       <div class="marquee" aria-hidden="true">
         <div class="marquee-track">
           <div class="marquee-group" id="marqueeGroup">
+            <span>AI MODELS</span><i data-lucide="asterisk"></i>
+            <span>创意开发</span><i data-lucide="asterisk"></i>
             <span>WEBGL</span><i data-lucide="asterisk"></i>
-            <span>粒子系统</span><i data-lucide="asterisk"></i>
-            <span>SHADERS</span><i data-lucide="asterisk"></i>
-            <span>KINETIC TYPE</span><i data-lucide="asterisk"></i>
-            <span>交互实验</span><i data-lucide="asterisk"></i>
+            <span>OPEN SOURCE</span><i data-lucide="asterisk"></i>
+            <span>ESP32</span><i data-lucide="asterisk"></i>
             <span>THREE.JS</span><i data-lucide="asterisk"></i>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- 02 / CRAFT -->
-    <section class="sec sec-craft" id="craft" data-sec="2">
-      <div class="sec-head mono" data-reveal>02 — CRAFT 技艺</div>
+    <!-- 02 / WORK -->
+    <section class="sec sec-craft" id="work" data-sec="2">
+      <div class="sec-head mono" data-reveal>02 — WORK 作品</div>
+      <!--
+        添加新项目：复制下面任意一个 <a class="row">...</a>，
+        修改序号、标题、标签和 href 即可（data-reveal 的 --d 控制入场延迟）。
+      -->
       <div class="rows" data-skew>
-        <article class="row" data-reveal data-hover style="--d:0s">
+        <a class="row" href="https://github.com/AiFLYF/PaperWhisperer" target="_blank" rel="noopener" data-reveal data-hover style="--d:0s">
           <span class="row-idx mono">01</span>
-          <h3>WEBGL &amp; SHADERS</h3>
-          <span class="row-tag mono">实时图形 / REAL-TIME</span>
+          <h3>PAPERWHISPERER</h3>
+          <span class="row-tag mono">AI 文档分析工作台 / PYTHON</span>
           <i data-lucide="arrow-up-right"></i>
-        </article>
-        <article class="row" data-reveal data-hover style="--d:.06s">
+        </a>
+        <a class="row" href="https://github.com/AiFLYF/FLYFWEB" target="_blank" rel="noopener" data-reveal data-hover style="--d:.06s">
           <span class="row-idx mono">02</span>
-          <h3>CREATIVE FRONTEND</h3>
-          <span class="row-tag mono">动效与排版 / MOTION</span>
+          <h3>FLYFWEB</h3>
+          <span class="row-tag mono">本站 · 粒子实验 / THREE.JS</span>
           <i data-lucide="arrow-up-right"></i>
-        </article>
-        <article class="row" data-reveal data-hover style="--d:.12s">
+        </a>
+        <a class="row" href="https://www.modelscope.cn/profile/FLYFAI" target="_blank" rel="noopener" data-reveal data-hover style="--d:.12s">
           <span class="row-idx mono">03</span>
-          <h3>EMBEDDED SYSTEMS</h3>
-          <span class="row-tag mono">固件与硬件 / ESP32</span>
+          <h3>AI MODELS</h3>
+          <span class="row-tag mono">模型主页 / MODELSCOPE</span>
           <i data-lucide="arrow-up-right"></i>
-        </article>
-        <article class="row" data-reveal data-hover style="--d:.18s">
-          <span class="row-idx mono">04</span>
-          <h3>INTERACTION LAB</h3>
-          <span class="row-tag mono">原型实验 / PROTOTYPES</span>
-          <i data-lucide="arrow-up-right"></i>
-        </article>
+        </a>
       </div>
     </section>
 
@@ -144,17 +147,20 @@
       <div class="sec-head mono" data-reveal>03 — CONTACT 联络</div>
       <div data-skew>
         <h2 class="contact-title">
-          <span class="st-line" data-reveal style="--d:0s">LET'S MAKE</span>
-          <span class="st-line" data-reveal style="--d:.09s">THE WEB <em class="serif">feel</em></span>
-          <span class="st-line" data-reveal style="--d:.18s">ALIVE.</span>
+          <span class="st-line" data-reveal style="--d:0s">LET'S BUILD</span>
+          <span class="st-line" data-reveal style="--d:.09s">SOMETHING</span>
+          <span class="st-line" data-reveal style="--d:.18s"><em class="serif">together</em>.</span>
         </h2>
       </div>
       <div class="cta-row" data-reveal style="--d:.28s">
         <a class="btn" href="https://github.com/AiFLYF" target="_blank" rel="noopener" data-hover>
           <i data-lucide="github"></i><span>GITHUB — @AIFLYF</span>
         </a>
-        <a class="btn btn-ghost" href="https://github.com/AiFLYF/FLYFWEB" target="_blank" rel="noopener" data-hover>
-          <i data-lucide="code"></i><span>VIEW SOURCE 源码</span>
+        <a class="btn btn-ghost" href="https://www.modelscope.cn/profile/FLYFAI" target="_blank" rel="noopener" data-hover>
+          <i data-lucide="layers"></i><span>MODELSCOPE 模搭</span>
+        </a>
+        <a class="btn btn-ghost" href="https://huggingface.co/FLYFAi" target="_blank" rel="noopener" data-hover>
+          <i data-lucide="bot"></i><span>HUGGING FACE</span>
         </a>
       </div>
       <footer class="site-foot mono">

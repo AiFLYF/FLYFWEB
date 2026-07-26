@@ -1,8 +1,8 @@
 # Hello, I'm FLYF
 
-**FLYF® — Particle Field** · An interactive WebGL experience.
+**FLYF® — 创意开发者 / Creative Developer** · My personal site, built as an interactive WebGL experience.
 
-70,000 GPU particles morph through four scroll-driven chapters — a breathing sphere, a torus knot, a rolling wave field, and finally the word **FLYF** — reshaped in real time by your scroll and cursor.
+70,000 GPU particles morph through four scroll-driven chapters — intro, about, work, contact — from a breathing sphere to the word **FLYF**, reshaped in real time by your scroll and cursor.
 
 **Live: https://aiflyf.github.io/FLYFWEB/**
 
