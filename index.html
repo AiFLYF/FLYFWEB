@@ -1,204 +1,180 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FLYF</title>
-    <style>
-        body, h1, .ai-text {
-            margin: 0;
-            padding: 0;
-            font-family: 'Courier New', Courier, monospace;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FLYF® — Particle Field / An Interactive WebGL Experience</title>
+  <meta name="description" content="FLYF — an experimental WebGL playground. 70,000 GPU particles morphing through scroll-driven chapters. 一场由代码驱动的粒子实验。">
+  <meta name="theme-color" content="#070708">
+  <meta property="og:title" content="FLYF® — Particle Field">
+  <meta property="og:description" content="An interactive particle experience built with Three.js. Scroll to reshape the field.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://aiflyf.github.io/FLYFWEB/">
+  <link rel="canonical" href="https://aiflyf.github.io/FLYFWEB/">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%3E%3Cpath%20d='M12%202v20M2%2012h20M4.9%204.9l14.2%2014.2M19.1%204.9L4.9%2019.1'%20stroke='%23C6FF4A'%20stroke-width='2.4'%20stroke-linecap='round'/%3E%3C/svg%3E">
 
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #0a0a0a;
-            color: #00ff00;
-            overflow: hidden;
-        }
+  <link rel="stylesheet" href="assets/css/fonts.css">
+  <link rel="stylesheet" href="assets/css/style.css">
 
-        .container {
-            position: relative;
-            text-align: center;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        h1 {
-            font-size: 8vw;
-            text-align: center;
-            padding: 1rem;
-            background-color: rgba(0, 255, 0, 0.1);
-            box-shadow: 0 0 40px #00ff00;
-            opacity: 0;
-            transform: translateY(-50px);
-            animation: fadeInDown 1s ease-out forwards, glitch 5s infinite;
-            cursor: pointer;
-            transition: all 0.3s;
-            position: relative;
-            z-index: 2;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-        }
-
-        h1:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 60px #00ff00;
-        }
-
-        .ai-text {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 40vw;
-            font-weight: bold;
-            color: rgba(0, 255, 0, 0.15);
-            z-index: 1;
-            user-select: none;
-            pointer-events: none;
-            animation: pulse 4s infinite alternate, rotate 40s linear infinite;
-            text-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
-        }
-
-        .matrix-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            overflow: hidden;
-            z-index: 0;
-        }
-
-        .matrix-column {
-            position: absolute;
-            top: -100%;
-            width: 1px;
-            height: 100%;
-            background-image: linear-gradient(0deg, rgba(0, 255, 0, 0) 0%, #00ff00 75%, #00ff00 100%);
-            animation: fall 20s infinite;
-            opacity: 0.5;
-        }
-
-        @media (max-width: 768px) {
-            h1 {
-                font-size: 6vw;
-            }
-            .ai-text {
-                font-size: 50vw;
-            }
-        }
-
-        @keyframes fadeInDown {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes glitch {
-            0% {
-                text-shadow: 0.05em 0 0 #00fffc, -0.05em -0.025em 0 #fc00ff,
-                    0.025em 0.05em 0 #fffc00;
-            }
-            14% {
-                text-shadow: 0.05em 0 0 #00fffc, -0.05em -0.025em 0 #fc00ff,
-                    0.025em 0.05em 0 #fffc00;
-            }
-            15% {
-                text-shadow: -0.05em -0.025em 0 #00fffc, 0.025em 0.025em 0 #fc00ff,
-                    -0.05em -0.05em 0 #fffc00;
-            }
-            49% {
-                text-shadow: -0.05em -0.025em 0 #00fffc, 0.025em 0.025em 0 #fc00ff,
-                    -0.05em -0.05em 0 #fffc00;
-            }
-            50% {
-                text-shadow: 0.025em 0.05em 0 #00fffc, 0.05em 0 0 #fc00ff,
-                    0 -0.05em 0 #fffc00;
-            }
-            99% {
-                text-shadow: 0.025em 0.05em 0 #00fffc, 0.05em 0 0 #fc00ff,
-                    0 -0.05em 0 #fffc00;
-            }
-            100% {
-                text-shadow: -0.025em 0 0 #00fffc, -0.025em -0.025em 0 #fc00ff,
-                    -0.025em -0.05em 0 #fffc00;
-            }
-        }
-
-        @keyframes fall {
-            0% {
-                top: -50%;
-            }
-            100% {
-                top: 110%;
-            }
-        }
-
-        @keyframes pulse {
-            0% {
-                opacity: 0.15;
-                transform: translate(-50%, -50%) scale(1);
-            }
-            100% {
-                opacity: 0.25;
-                transform: translate(-50%, -50%) scale(1.1);
-            }
-        }
-
-        @keyframes rotate {
-            0% {
-                transform: translate(-50%, -50%) rotate(0deg);
-            }
-            100% {
-                transform: translate(-50%, -50%) rotate(360deg);
-            }
-        }
-    </style>
+  <script type="importmap">
+    { "imports": { "three": "./assets/vendor/three.module.min.js" } }
+  </script>
 </head>
 <body>
-    <div class="matrix-bg">
+
+  <!-- Preloader -->
+  <div id="preloader" aria-hidden="true">
+    <div class="pre-meta mono">INITIALIZING PARTICLE FIELD<br>初始化粒子场</div>
+    <div class="pre-count"><span id="preCount">00</span></div>
+    <div class="pre-bar"><span id="preBar"></span></div>
+  </div>
+
+  <!-- Ambient background + WebGL canvas -->
+  <div class="bg-glow" aria-hidden="true"></div>
+  <canvas id="gl" aria-hidden="true"></canvas>
+  <div class="vignette" aria-hidden="true"></div>
+  <div class="grain" aria-hidden="true"></div>
+
+  <!-- Header -->
+  <header class="site-head">
+    <a class="brand" href="#index" data-target="0" data-hover>
+      <i data-lucide="asterisk" class="brand-ast"></i>
+      <span class="brand-word">FLYF<sup>®</sup></span>
+    </a>
+    <nav class="site-nav mono" aria-label="Sections">
+      <a href="#index" data-target="0" data-hover>INDEX</a>
+      <a href="#manifesto" data-target="1" data-hover>MANIFESTO</a>
+      <a href="#craft" data-target="2" data-hover>CRAFT</a>
+      <a href="#contact" data-target="3" data-hover>CONTACT</a>
+    </nav>
+    <div class="head-meta mono">
+      <span class="live-dot" aria-hidden="true"></span>
+      <span>LOCAL</span>
+      <span id="clock">--:--:--</span>
     </div>
-    <div class="container">
-        <div class="ai-text">AI</div>
-        <h1>Hello! FLYF</h1>
-    </div>
-    <script>
-        function createMatrixBackground() {
-            const matrixBg = document.querySelector('.matrix-bg');
-            const width = window.innerWidth;
-            const columnCount = Math.floor(width / 20);
+  </header>
 
-            matrixBg.innerHTML = '';
+  <!-- Side chapter index -->
+  <nav class="side-index mono" aria-label="Chapter index">
+    <button data-target="0" data-hover><span class="si-num">00</span><span class="si-label">INDEX</span></button>
+    <button data-target="1" data-hover><span class="si-num">01</span><span class="si-label">MANIFESTO</span></button>
+    <button data-target="2" data-hover><span class="si-num">02</span><span class="si-label">CRAFT</span></button>
+    <button data-target="3" data-hover><span class="si-num">03</span><span class="si-label">CONTACT</span></button>
+  </nav>
 
-            for (let i = 0; i < columnCount; i++) {
-                const column = document.createElement('div');
-                column.className = 'matrix-column';
-                column.style.left = `${i * 20}px`;
-                column.style.animationDelay = `${Math.random() * 20}s`;
-                matrixBg.appendChild(column);
-            }
-        }
+  <main id="content">
 
-        createMatrixBackground();
-        window.addEventListener('resize', createMatrixBackground);
+    <!-- 00 / HERO -->
+    <section class="sec sec-hero" id="index" data-sec="0">
+      <div class="hero-inner">
+        <p class="eyebrow mono" data-load>EXPERIMENT NO.001 — 粒子场 / PARTICLE FIELD</p>
+        <h1 class="hero-title" aria-label="FLYF WEB">
+          <span class="ht-row"><span class="ht-line" data-load-line>FLYF</span></span>
+          <span class="ht-row"><span class="ht-line ht-outline" data-load-line>WEB<span class="ht-sup"><i data-lucide="asterisk"></i></span></span></span>
+        </h1>
+        <div class="hero-foot" data-load>
+          <p class="mono"><span id="statParticles">——</span> PARTICLES / WEBGL / 60FPS TARGET</p>
+          <p class="mono scroll-hint"><i data-lucide="mouse"></i> SCROLL 滚动探索</p>
+        </div>
+      </div>
+    </section>
 
-        const h1 = document.querySelector('h1');
-        h1.addEventListener('click', () => {
-            h1.style.transform = 'scale(1.1)';
-            setTimeout(() => {
-                h1.style.transform = 'scale(1)';
-            }, 200);
-        });
-    </script>
+    <!-- 01 / MANIFESTO -->
+    <section class="sec sec-manifesto" id="manifesto" data-sec="1">
+      <div class="sec-head mono" data-reveal>01 — MANIFESTO 宣言</div>
+      <div data-skew>
+        <h2 class="statement">
+          <span class="st-line" data-reveal style="--d:0s">THE BROWSER</span>
+          <span class="st-line" data-reveal style="--d:.09s">IS A <em class="serif">canvas</em>,</span>
+          <span class="st-line" data-reveal style="--d:.18s">CODE IS THE <em class="serif">brush</em>.</span>
+        </h2>
+      </div>
+      <p class="side-note mono" data-reveal style="--d:.3s">
+        每一帧都是一次绘画 — 数万粒子在 GPU 上呼吸、流动、重组。<br>
+        Every frame is a painting: a living field of particles,
+        reshaped by your scroll and cursor in real time.
+      </p>
+      <div class="marquee" aria-hidden="true">
+        <div class="marquee-track">
+          <div class="marquee-group" id="marqueeGroup">
+            <span>WEBGL</span><i data-lucide="asterisk"></i>
+            <span>粒子系统</span><i data-lucide="asterisk"></i>
+            <span>SHADERS</span><i data-lucide="asterisk"></i>
+            <span>KINETIC TYPE</span><i data-lucide="asterisk"></i>
+            <span>交互实验</span><i data-lucide="asterisk"></i>
+            <span>THREE.JS</span><i data-lucide="asterisk"></i>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 02 / CRAFT -->
+    <section class="sec sec-craft" id="craft" data-sec="2">
+      <div class="sec-head mono" data-reveal>02 — CRAFT 技艺</div>
+      <div class="rows" data-skew>
+        <article class="row" data-reveal data-hover style="--d:0s">
+          <span class="row-idx mono">01</span>
+          <h3>WEBGL &amp; SHADERS</h3>
+          <span class="row-tag mono">实时图形 / REAL-TIME</span>
+          <i data-lucide="arrow-up-right"></i>
+        </article>
+        <article class="row" data-reveal data-hover style="--d:.06s">
+          <span class="row-idx mono">02</span>
+          <h3>CREATIVE FRONTEND</h3>
+          <span class="row-tag mono">动效与排版 / MOTION</span>
+          <i data-lucide="arrow-up-right"></i>
+        </article>
+        <article class="row" data-reveal data-hover style="--d:.12s">
+          <span class="row-idx mono">03</span>
+          <h3>EMBEDDED SYSTEMS</h3>
+          <span class="row-tag mono">固件与硬件 / ESP32</span>
+          <i data-lucide="arrow-up-right"></i>
+        </article>
+        <article class="row" data-reveal data-hover style="--d:.18s">
+          <span class="row-idx mono">04</span>
+          <h3>INTERACTION LAB</h3>
+          <span class="row-tag mono">原型实验 / PROTOTYPES</span>
+          <i data-lucide="arrow-up-right"></i>
+        </article>
+      </div>
+    </section>
+
+    <!-- 03 / CONTACT -->
+    <section class="sec sec-contact" id="contact" data-sec="3">
+      <div class="sec-head mono" data-reveal>03 — CONTACT 联络</div>
+      <div data-skew>
+        <h2 class="contact-title">
+          <span class="st-line" data-reveal style="--d:0s">LET'S MAKE</span>
+          <span class="st-line" data-reveal style="--d:.09s">THE WEB <em class="serif">feel</em></span>
+          <span class="st-line" data-reveal style="--d:.18s">ALIVE.</span>
+        </h2>
+      </div>
+      <div class="cta-row" data-reveal style="--d:.28s">
+        <a class="btn" href="https://github.com/AiFLYF" target="_blank" rel="noopener" data-hover>
+          <i data-lucide="github"></i><span>GITHUB — @AIFLYF</span>
+        </a>
+        <a class="btn btn-ghost" href="https://github.com/AiFLYF/FLYFWEB" target="_blank" rel="noopener" data-hover>
+          <i data-lucide="code"></i><span>VIEW SOURCE 源码</span>
+        </a>
+      </div>
+      <footer class="site-foot mono">
+        <span>© 2026 FLYF — BUILT WITH THREE.JS</span>
+        <span class="foot-mid">DEPLOYED ON GITHUB PAGES</span>
+        <button class="to-top" data-target="0" data-hover><i data-lucide="arrow-up"></i><span>TOP</span></button>
+      </footer>
+    </section>
+
+  </main>
+
+  <!-- Custom cursor -->
+  <div class="c-dot" aria-hidden="true"></div>
+  <div class="c-ring" aria-hidden="true"></div>
+
+  <noscript>
+    <div class="noscript mono">THIS EXPERIENCE REQUIRES JAVASCRIPT / 本站需要启用 JAVASCRIPT</div>
+  </noscript>
+
+  <script src="assets/vendor/lucide.min.js"></script>
+  <script type="module" src="assets/js/app.js"></script>
 </body>
 </html>
