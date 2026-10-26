@@ -10,14 +10,14 @@
 
 - [Three.js](https://threejs.org) r160 — custom GLSL shaders (simplex-noise turbulence, morph targets, cursor repulsion)
 - Vanilla JS — inertia smooth-scroll, velocity type-skew, custom cursor, scroll-driven chapter system
-- [Lucide](https://lucide.dev) icons · Clash Display / Space Mono / Instrument Serif
-- Zero build step, zero external requests — every dependency is vendored, deployed straight to GitHub Pages
+- Inline [Lucide](https://lucide.dev) symbols (only the 12 icons actually used) · Clash Display / Space Mono / Instrument Serif
+- Zero build step, zero external requests — fonts and Three.js are vendored, icons ship inline, deployed straight to GitHub Pages
 
 ## Run locally
 
 ```bash
-python -m http.server 4173
-# open http://localhost:4173
+python -m http.server 9420
+# open http://localhost:9420
 ```
 
 Licenses for vendored assets: [assets/vendor/LICENSES.md](assets/vendor/LICENSES.md)

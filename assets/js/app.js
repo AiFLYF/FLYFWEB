@@ -13,11 +13,16 @@ const damp = (a, b, l, dt) => lerp(a, b, 1 - Math.exp(-l * dt));
 
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const finePointer = matchMedia('(pointer: fine)').matches;
+const fontsSettled = Promise.race([
+  document.fonts.ready,
+  new Promise((resolve) => setTimeout(resolve, 2200)),
+]);
 
 history.scrollRestoration = 'manual';
-window.scrollTo(0, 0);
-
-if (window.lucide) window.lucide.createIcons();
+let initialTarget = null;
+try { initialTarget = location.hash ? document.getElementById(decodeURIComponent(location.hash.slice(1))) : null; }
+catch { initialTarget = null; }
+if (!initialTarget) window.scrollTo(0, 0);
 
 /* ---------- clock ---------- */
 
@@ -89,24 +94,54 @@ function progressFromY(y) {
   return 3;
 }
 
+// which chapter the nav should highlight: the last section whose top has
+// passed the viewport mid-line. Height-agnostic, so a section taller than
+// one screen keeps the highlight until the next one actually arrives.
+function activeFromY(y) {
+  const ref = y + innerHeight * 0.5;
+  let idx = 0;
+  for (let i = 0; i < tops.length; i++) if (ref >= tops[i]) idx = i;
+  return idx;
+}
+
 /* ---------- chapter navigation ---------- */
 
 const navLinks = [...document.querySelectorAll('.site-nav a')];
-const sideBtns = [...document.querySelectorAll('.side-index button')];
+const sideBtns = [...document.querySelectorAll('.side-index a')];
 document.querySelectorAll('[data-target]').forEach((el) => {
   el.addEventListener('click', (e) => {
     e.preventDefault();
     const i = parseInt(el.dataset.target, 10);
     smooth.to(tops[i] + 2);
+    const id = sections[i]?.id;
+    if (id) history.replaceState(null, '', `#${id}`);
   });
+
+window.addEventListener('hashchange', () => {
+  const target = document.getElementById(location.hash.slice(1));
+  const i = sections.indexOf(target);
+  if (i >= 0) smooth.to(tops[i] + 2);
+});
 });
 
 let activeIdx = -1;
+const chapterNum = document.getElementById('chapterNum');
+const chapterName = document.getElementById('chapterName');
 function setActive(i) {
   if (i === activeIdx) return;
   activeIdx = i;
-  navLinks.forEach((a, k) => a.classList.toggle('active', k === i));
-  sideBtns.forEach((b, k) => b.classList.toggle('active', k === i));
+  navLinks.forEach((a, k) => {
+    a.classList.toggle('active', k === i);
+    if (k === i) a.setAttribute('aria-current', 'location');
+    else a.removeAttribute('aria-current');
+  });
+  sideBtns.forEach((b, k) => {
+    b.classList.toggle('active', k === i);
+    if (k === i) b.setAttribute('aria-current', 'location');
+    else b.removeAttribute('aria-current');
+  });
+  if (chapterNum) chapterNum.textContent = String(i).padStart(2, '0');
+  if (chapterName) chapterName.textContent = sections[i]?.id.toUpperCase() || 'INDEX';
 }
 
 /* ---------- reveal on scroll ---------- */
@@ -123,7 +158,6 @@ document.querySelectorAll('[data-reveal]').forEach((el) => io.observe(el));
 const marqueeGroup = document.getElementById('marqueeGroup');
 if (marqueeGroup) {
   marqueeGroup.parentElement.appendChild(marqueeGroup.cloneNode(true));
-  if (window.lucide) window.lucide.createIcons();
 }
 
 /* ---------- custom cursor ---------- */
@@ -145,6 +179,27 @@ if (finePointer && !reduced) {
   });
 }
 
+/* ---------- external-link hints for assistive tech ---------- */
+
+document.querySelectorAll('a[target="_blank"]').forEach((link) => {
+  const hint = document.createElement('span');
+  hint.className = 'sr-only';
+  hint.textContent = '（在新窗口打开）';
+  link.appendChild(hint);
+});
+
+/* ---------- pointer-tracked surface light ---------- */
+
+if (finePointer && !reduced) {
+  document.querySelectorAll('.row, .cap-card').forEach((el) => {
+    el.addEventListener('pointermove', (e) => {
+      const rect = el.getBoundingClientRect();
+      el.style.setProperty('--mx', `${e.clientX - rect.left}px`);
+      el.style.setProperty('--my', `${e.clientY - rect.top}px`);
+    });
+  });
+}
+
 /* ---------- velocity skew ---------- */
 
 const skewEls = [...document.querySelectorAll('[data-skew]')];
@@ -153,6 +208,8 @@ let skewCur = 0;
 /* ---------- hero parallax / misc ---------- */
 
 const heroInner = document.querySelector('.hero-inner');
+const progressBar = document.getElementById('scrollProgress');
+let heroFaded = false;
 
 /* ============================================================
    THREE.JS — the particle field
@@ -163,7 +220,7 @@ const glState = { ok: false };
 const CHAPTERS = [
   { rx: 0.18, ry: 0.0, rz: 0.0, z: 4.8, noise: 0.10, mouseF: 1.0, op: 0.9 },   // 00 sphere
   { rx: 0.55, ry: 0.9, rz: -0.14, z: 5.6, noise: 0.16, mouseF: 1.0, op: 0.85 }, // 01 torus knot
-  { rx: -1.02, ry: 0.0, rz: 0.06, z: 4.3, noise: 0.10, mouseF: 0.7, op: 0.58 },  // 02 wave field
+  { rx: -1.02, ry: 0.0, rz: 0.06, z: 4.3, noise: 0.09, mouseF: 0.7, op: 0.36 },  // 02 wave field
   { rx: 0.0, ry: 0.0, rz: 0.0, z: 4.7, noise: 0.035, mouseF: 0.9, op: 0.95 },   // 03 FLYF
 ];
 
@@ -447,8 +504,8 @@ if (finePointer) {
 
 function renderGL(dt) {
   if (!glState.ok) return;
-  glTime += dt;
-  progC = damp(progC, progT, 4.5, dt);
+  if (!reduced) glTime += dt;
+  progC = reduced ? progT : damp(progC, progT, 4.5, dt);
 
   const i = clamp(Math.floor(progC), 0, 2);
   const f = progC - i;
@@ -505,7 +562,6 @@ const preCount = document.getElementById('preCount');
 const preBar = document.getElementById('preBar');
 const LOAD_MS = reduced ? 200 : 1700;
 const loadStart = performance.now();
-let loaderDone = false;
 
 function loaderTick(now) {
   const p = clamp((now - loadStart) / LOAD_MS, 0, 1);
@@ -513,11 +569,18 @@ function loaderTick(now) {
   preCount.textContent = String(Math.floor(eased * 100)).padStart(2, '0');
   preBar.style.transform = `scaleX(${eased})`;
   if (p < 1) { requestAnimationFrame(loaderTick); return; }
-  Promise.race([document.fonts.ready, new Promise((r) => setTimeout(r, 2200))]).then(() => {
-    loaderDone = true;
+  fontsSettled.then(() => {
+    clearTimeout(window.__flyfBootFallback);
     document.body.classList.add('is-loaded');
     measureSections();
     smooth.measure();
+    if (initialTarget) {
+      const i = sections.indexOf(initialTarget);
+      if (i >= 0) {
+        window.scrollTo(0, tops[i]);
+        smooth.t = smooth.c = tops[i];
+      }
+    }
   });
 }
 requestAnimationFrame(loaderTick);
@@ -536,8 +599,9 @@ function frame(now) {
   const vel = smooth.enabled ? (smooth.t - smooth.c) : 0;
 
   progT = progressFromY(y);
-  setActive(clamp(Math.round(progressFromY(y + innerHeight * 0.25)), 0, 3));
+  setActive(activeFromY(y));
   document.body.classList.toggle('scrolled', y > 80);
+  if (progressBar) progressBar.style.transform = `scaleX(${clamp(y / smooth.max, 0, 1)})`;
 
   if (!reduced) {
     // velocity skew on big type
@@ -545,9 +609,19 @@ function frame(now) {
     skewCur = damp(skewCur, target, 8, dt);
     const sk = Math.abs(skewCur) < 0.01 ? 0 : skewCur;
     for (const el of skewEls) el.style.transform = `skewY(${sk}deg)`;
-    // hero parallax
-    if (heroInner && y < innerHeight * 1.2) {
-      heroInner.style.transform = `translate3d(0, ${y * 0.22}px, 0)`;
+    // hero parallax + early fade so it never ghosts into the next chapter
+    if (heroInner) {
+      const fade = clamp(1 - Math.max(0, y - innerHeight * 0.03) / (innerHeight * 0.48), 0, 1);
+      const faded = fade <= 0.01;
+      heroInner.style.opacity = fade === 1 ? '' : String(fade);
+      heroInner.classList.toggle('is-faded', faded);
+      if (faded !== heroFaded) {
+        heroFaded = faded;
+        heroInner.querySelectorAll('a, button').forEach((el) => { el.tabIndex = faded ? -1 : 0; });
+      }
+      if (y < innerHeight * 1.2) {
+        heroInner.style.transform = `translate3d(0, ${y * 0.22}px, 0)`;
+      }
     }
     // cursor
     if (cur.on) {

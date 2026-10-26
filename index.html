@@ -1,26 +1,117 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>FLYF® — 创意开发者 Creative Developer</title>
   <meta name="description" content="你好，我是 FLYF — 创意开发者，在 AI、Web 与嵌入式硬件之间探索：搭建 AI Agent、微调大模型、软硬结合。Creative developer building AI agents, fine-tuning LLMs, and fusing software with hardware.">
+  <meta name="author" content="FLYF">
+  <meta name="robots" content="index, follow, max-image-preview:large">
   <meta name="theme-color" content="#070708">
+  <meta name="color-scheme" content="dark">
   <meta property="og:title" content="FLYF® — 创意开发者 Creative Developer">
   <meta property="og:description" content="Personal site of FLYF — 70,000 GPU particles, four scroll chapters, one developer. 你好，我是 FLYF。">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://aiflyf.github.io/FLYFWEB/">
+  <meta property="og:site_name" content="FLYF®">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:image" content="https://aiflyf.github.io/FLYFWEB/assets/img/og-cover.jpg">
+  <meta property="og:image:type" content="image/jpeg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="FLYF® — 创意开发者 / Creative Developer">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="FLYF® — 创意开发者 Creative Developer">
+  <meta name="twitter:description" content="AI Agent / 大模型微调 / WebGL / ESP32 — 你好，我是 FLYF。">
+  <meta name="twitter:image" content="https://aiflyf.github.io/FLYFWEB/assets/img/og-cover.jpg">
   <link rel="canonical" href="https://aiflyf.github.io/FLYFWEB/">
   <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%3E%3Cpath%20d='M12%202v20M2%2012h20M4.9%204.9l14.2%2014.2M19.1%204.9L4.9%2019.1'%20stroke='%23C6FF4A'%20stroke-width='2.4'%20stroke-linecap='round'/%3E%3C/svg%3E">
 
+  <link rel="preload" href="assets/fonts/f03.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/f08.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="modulepreload" href="assets/vendor/three.module.min.js">
   <link rel="stylesheet" href="assets/css/fonts.css">
   <link rel="stylesheet" href="assets/css/style.css">
+  <script>document.documentElement.classList.add('js');</script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Person",
+        "@id": "https://aiflyf.github.io/FLYFWEB/#person",
+        "name": "FLYF",
+        "alternateName": ["AIFLYF", "FLYFAI"],
+        "url": "https://aiflyf.github.io/FLYFWEB/",
+        "image": "https://aiflyf.github.io/FLYFWEB/assets/img/og-cover.jpg",
+        "jobTitle": "创意开发者 / Creative Developer",
+        "description": "创意开发者，在 AI、Web 与嵌入式硬件之间探索：搭建 AI Agent、微调大模型、打造实时图形实验，也把代码烧进 ESP32。",
+        "email": "aiflyf@outlook.com",
+        "knowsLanguage": ["zh-CN", "en"],
+        "knowsAbout": ["AI Agent", "大模型微调", "LLM fine-tuning", "WebGL", "Three.js", "ESP32", "嵌入式开发", "Python", "Go", "Java", "Vibe Coding", "TTS", "视觉语言模型"],
+        "sameAs": [
+          "https://github.com/AiFLYF",
+          "https://www.modelscope.cn/profile/FLYFAI",
+          "https://huggingface.co/FLYFAi"
+        ]
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://aiflyf.github.io/FLYFWEB/#website",
+        "url": "https://aiflyf.github.io/FLYFWEB/",
+        "name": "FLYF®",
+        "inLanguage": "zh-CN",
+        "publisher": { "@id": "https://aiflyf.github.io/FLYFWEB/#person" }
+      },
+      {
+        "@type": "ProfilePage",
+        "@id": "https://aiflyf.github.io/FLYFWEB/#page",
+        "url": "https://aiflyf.github.io/FLYFWEB/",
+        "name": "FLYF® — 创意开发者 Creative Developer",
+        "isPartOf": { "@id": "https://aiflyf.github.io/FLYFWEB/#website" },
+        "mainEntity": { "@id": "https://aiflyf.github.io/FLYFWEB/#person" },
+        "inLanguage": "zh-CN"
+      },
+      {
+        "@type": "ItemList",
+        "name": "FLYF 的项目与模型",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "item": { "@type": "SoftwareSourceCode", "name": "PaperWhisperer", "description": "AI 文档分析工作台，读论文与长文档并生成结构化摘要、引用图谱与追问问答。", "codeRepository": "https://github.com/AiFLYF/PaperWhisperer", "url": "https://aiflyf.github.io/PaperWhisperer/", "programmingLanguage": "Python" } },
+          { "@type": "ListItem", "position": 2, "item": { "@type": "SoftwareSourceCode", "name": "FLYFWEB", "description": "本站：70,000 粒子的 Three.js 交互站点，四段滚动驱动章节。", "codeRepository": "https://github.com/AiFLYF/FLYFWEB", "url": "https://aiflyf.github.io/FLYFWEB/", "programmingLanguage": "JavaScript" } },
+          { "@type": "ListItem", "position": 3, "item": { "@type": "SoftwareSourceCode", "name": "WuWu Intelligence", "description": "用一句话控制任意硬件的 AI Agent 技能，面向 ESP32 与嵌入式设备。", "codeRepository": "https://github.com/AiFLYF/wuwu-intelligence", "url": "https://aiflyf.github.io/wuwu-intelligence", "programmingLanguage": "Python" } },
+          { "@type": "ListItem", "position": 4, "item": { "@type": "SoftwareSourceCode", "name": "VibeBridge", "description": "以 Vibe Coding 为入口的长期个人成长支持系统：静默观察、证据可追溯。", "codeRepository": "https://github.com/AiFLYF/vibebridge", "url": "https://aiflyf.github.io/vibebridge/", "programmingLanguage": "HTML" } },
+          { "@type": "ListItem", "position": 5, "item": { "@type": "SoftwareSourceCode", "name": "Ming TTS Studio", "description": "Ming-3.0-tts 的开源 Web 声音工作台：10 个任务、117 个内置音色、WAV 导出，纯静态前端加可选多卡 FastAPI 后端。", "codeRepository": "https://github.com/AiFLYF/ming-tts-studio", "url": "https://aiflyf.github.io/ming-tts-studio/", "programmingLanguage": "Python" } },
+          { "@type": "ListItem", "position": 6, "item": { "@type": "SoftwareSourceCode", "name": "Multi-Agent Collab", "description": "支持 15 个 AI 编码平台的协作套件：共享 AGENTS.md、分支策略、文件占用协调与本机网页看板。", "codeRepository": "https://github.com/AiFLYF/multi-agent-collab", "url": "https://aiflyf.github.io/multi-agent-collab/", "programmingLanguage": "Python" } },
+          { "@type": "ListItem", "position": 7, "item": { "@type": "SoftwareSourceCode", "name": "Ego Link", "description": "ESP32-S3-EYE 随身智能终端与自托管 Python 服务器的交互闭环实验，18 周课程项目，进行中。", "codeRepository": "https://github.com/AiFLYF/ego-link-esp32", "url": "https://aiflyf.github.io/ego-link-esp32/", "programmingLanguage": "Python" } },
+          { "@type": "ListItem", "position": 8, "item": { "@type": "SoftwareApplication", "name": "Invoice", "description": "基于 Qwen3-VL 微调的发票信息提取模型，含 GGUF 量化版。", "url": "https://www.modelscope.cn/models/FLYFAI/Invoice", "applicationCategory": "AI Model" } },
+          { "@type": "ListItem", "position": 9, "item": { "@type": "SoftwareApplication", "name": "Neko V1", "description": "猫娘人格微调模型。", "url": "https://www.modelscope.cn/models/FLYFAI/Neko-1", "applicationCategory": "AI Model" } }
+        ]
+      }
+    ]
+  }
+  </script>
 
   <script type="importmap">
     { "imports": { "three": "./assets/vendor/three.module.min.js" } }
   </script>
 </head>
 <body>
+  <svg class="icon-sprite" aria-hidden="true" focusable="false">
+    <symbol id="i-asterisk" viewBox="0 0 24 24"><path d="M12 6v12"/><path d="M17.196 9 6.804 15"/><path d="m6.804 9 10.392 6"/></symbol>
+    <symbol id="i-mouse" viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="7"/><path d="M12 6v4"/></symbol>
+    <symbol id="i-arrow-up-right" viewBox="0 0 24 24"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></symbol>
+    <symbol id="i-arrow-down-right" viewBox="0 0 24 24"><path d="m7 7 10 10"/><path d="M17 7v10H7"/></symbol>
+    <symbol id="i-arrow-up" viewBox="0 0 24 24"><path d="m5 12 7-7 7 7"/><path d="M12 19V5"/></symbol>
+    <symbol id="i-sparkles" viewBox="0 0 24 24"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/><path d="M20 3v4"/><path d="M22 5h-4"/><path d="M4 17v2"/><path d="M5 18H3"/></symbol>
+    <symbol id="i-orbit" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><circle cx="19" cy="5" r="2"/><circle cx="5" cy="19" r="2"/><path d="M10.4 21.9a10 10 0 0 0 9.941-15.416"/><path d="M13.5 2.1a10 10 0 0 0-9.841 15.416"/></symbol>
+    <symbol id="i-cpu" viewBox="0 0 24 24"><rect width="16" height="16" x="4" y="4" rx="2"/><rect width="6" height="6" x="9" y="9" rx="1"/><path d="M15 2v2"/><path d="M15 20v2"/><path d="M2 15h2"/><path d="M2 9h2"/><path d="M20 15h2"/><path d="M20 9h2"/><path d="M9 2v2"/><path d="M9 20v2"/></symbol>
+    <symbol id="i-github" viewBox="0 0 24 24"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></symbol>
+    <symbol id="i-layers" viewBox="0 0 24 24"><path d="m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"/><path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65"/><path d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65"/></symbol>
+    <symbol id="i-mail" viewBox="0 0 24 24"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></symbol>
+    <symbol id="i-bot" viewBox="0 0 24 24"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></symbol>
+  </svg>
+  <a class="skip-link mono" href="#content">跳到正文 / SKIP TO CONTENT</a>
 
   <!-- Preloader -->
   <div id="preloader" aria-hidden="true">
@@ -34,11 +125,16 @@
   <canvas id="gl" aria-hidden="true"></canvas>
   <div class="vignette" aria-hidden="true"></div>
   <div class="grain" aria-hidden="true"></div>
+  <div class="scroll-progress" aria-hidden="true"><span id="scrollProgress"></span></div>
+  <div class="chapter-status mono" aria-hidden="true">
+    <span id="chapterNum">00</span><span class="chapter-total">/ 03</span>
+    <span class="chapter-divider"></span><span id="chapterName">INDEX</span>
+  </div>
 
   <!-- Header -->
   <header class="site-head">
     <a class="brand" href="#index" data-target="0" data-hover>
-      <i data-lucide="asterisk" class="brand-ast"></i>
+      <svg class="brand-ast icon" aria-hidden="true"><use href="#i-asterisk"></use></svg>
       <span class="brand-word">FLYF<sup>®</sup></span>
     </a>
     <nav class="site-nav mono" aria-label="Sections">
@@ -56,28 +152,35 @@
 
   <!-- Side chapter index -->
   <nav class="side-index mono" aria-label="Chapter index">
-    <button data-target="0" data-hover><span class="si-num">00</span><span class="si-label">INDEX</span></button>
-    <button data-target="1" data-hover><span class="si-num">01</span><span class="si-label">ABOUT</span></button>
-    <button data-target="2" data-hover><span class="si-num">02</span><span class="si-label">WORK</span></button>
-    <button data-target="3" data-hover><span class="si-num">03</span><span class="si-label">CONTACT</span></button>
+    <a href="#index" data-target="0" data-hover><span class="si-num">00</span><span class="si-label">INDEX</span></a>
+    <a href="#about" data-target="1" data-hover><span class="si-num">01</span><span class="si-label">ABOUT</span></a>
+    <a href="#work" data-target="2" data-hover><span class="si-num">02</span><span class="si-label">WORK</span></a>
+    <a href="#contact" data-target="3" data-hover><span class="si-num">03</span><span class="si-label">CONTACT</span></a>
   </nav>
 
-  <main id="content">
+  <main id="content" tabindex="-1">
 
     <!-- 00 / HERO -->
     <section class="sec sec-hero" id="index" data-sec="0">
       <div class="hero-inner">
         <p class="eyebrow mono" data-load>你好 HELLO — 我是 FLYF · 创意开发者 / PORTFOLIO 2026</p>
+        <div class="hero-status mono" data-load><span class="live-dot" aria-hidden="true"></span>AVAILABLE FOR COLLABORATION <span>CN / REMOTE</span></div>
         <h1 class="hero-title" aria-label="FLYF WEB">
           <span class="ht-row"><span class="ht-line" data-load-line>FLYF</span></span>
-          <span class="ht-row"><span class="ht-line ht-outline" data-load-line>WEB<span class="ht-sup"><i data-lucide="asterisk"></i></span></span></span>
+          <span class="ht-row"><span class="ht-line ht-outline" data-load-line>WEB<span class="ht-sup"><svg class="icon" aria-hidden="true"><use href="#i-asterisk"></use></svg></span></span></span>
         </h1>
         <div class="hero-foot" data-load>
-          <div>
+          <div class="hero-intro">
             <p class="mono">CREATIVE DEVELOPER — AI · WEB · HARDWARE</p>
-            <p class="mono"><span id="statParticles">——</span> PARTICLES / WEBGL / 60FPS TARGET</p>
+            <p class="hero-summary">把想象力编译成真实体验。<br><span>Turning ideas into intelligent, tangible experiences.</span></p>
           </div>
-          <p class="mono scroll-hint"><i data-lucide="mouse"></i> SCROLL 滚动探索</p>
+          <a class="hero-cta" href="#work" data-target="2" data-hover aria-label="探索精选作品">
+            <span class="mono">EXPLORE <br>THE WORK</span><svg class="icon" aria-hidden="true"><use href="#i-arrow-down-right"></use></svg>
+          </a>
+          <div class="hero-tech">
+            <p class="mono"><span id="statParticles">——</span> PARTICLES / WEBGL / 60FPS TARGET</p>
+            <p class="mono scroll-hint"><svg class="icon" aria-hidden="true"><use href="#i-mouse"></use></svg> SCROLL 滚动探索</p>
+          </div>
         </div>
       </div>
     </section>
@@ -92,24 +195,50 @@
           <span class="st-line" data-reveal style="--d:.18s">&amp; <em class="serif">move</em>.</span>
         </h2>
       </div>
-      <p class="side-note mono" data-reveal style="--d:.3s">
-        你好，我是 FLYF — 一名创意开发者。<br>
-        我在 AI、Web 与嵌入式硬件之间探索：搭建 AI Agent、微调与训练大模型、
-        打造实时图形实验，也热衷软硬结合——把代码烧进 ESP32。<br>
-        Creative developer exploring the space between AI, real-time web graphics
-        and embedded hardware — building AI agents, fine-tuning LLMs, fusing software with hardware.
+      <p class="side-note" data-reveal style="--d:.3s">
+        <span class="side-note-cn">你好，我是 FLYF — 一名创意开发者。我在 AI、Web 与嵌入式硬件之间探索：搭建 AI Agent、微调与训练大模型、打造实时图形实验，也热衷软硬结合——把代码烧进 ESP32。</span>
+        <span class="side-note-en mono">Creative developer exploring the space between AI, real-time web graphics and embedded hardware — building AI agents, fine-tuning LLMs, fusing software with hardware.</span>
+      </p>
+      <div class="capability-grid">
+        <article class="cap-card" data-reveal style="--d:.24s">
+          <div class="cap-top mono"><span>01 / INTELLIGENCE</span><svg class="icon" aria-hidden="true"><use href="#i-sparkles"></use></svg></div>
+          <h3>AI SYSTEMS</h3>
+          <p>从 AI Agent 到模型微调，让模糊的想法成为可运行、可协作的智能系统。</p>
+          <div class="cap-tags mono"><span>AGENTS</span><span>LLM</span><span>PYTHON</span></div>
+        </article>
+        <article class="cap-card" data-reveal style="--d:.30s">
+          <div class="cap-top mono"><span>02 / EXPERIENCE</span><svg class="icon" aria-hidden="true"><use href="#i-orbit"></use></svg></div>
+          <h3>CREATIVE WEB</h3>
+          <p>用实时图形、动态排版与交互细节，把网页从信息容器变成数字体验。</p>
+          <div class="cap-tags mono"><span>WEBGL</span><span>THREE.JS</span><span>MOTION</span></div>
+        </article>
+        <article class="cap-card" data-reveal style="--d:.36s">
+          <div class="cap-top mono"><span>03 / PHYSICAL</span><svg class="icon" aria-hidden="true"><use href="#i-cpu"></use></svg></div>
+          <h3>SOFT × HARD</h3>
+          <p>连接代码与现实世界，探索 ESP32、随身终端与软硬结合的无限可能。</p>
+          <div class="cap-tags mono"><span>ESP32</span><span>IOT</span><span>PROTOTYPE</span></div>
+        </article>
+      </div>
+      <p class="now mono" data-reveal style="--d:.42s">
+        <span class="now-label">NOW</span>
+        <span class="now-body">EGO LINK 第 6 周 / MING TTS STUDIO 刚发布 / 正在把大模型塞进 ESP32</span>
       </p>
       <div class="marquee" aria-hidden="true">
         <div class="marquee-track">
           <div class="marquee-group" id="marqueeGroup">
-            <span>AI MODELS</span><i data-lucide="asterisk"></i>
-            <span>AI AGENT</span><i data-lucide="asterisk"></i>
-            <span>创意开发</span><i data-lucide="asterisk"></i>
-            <span>WEBGL</span><i data-lucide="asterisk"></i>
-            <span>OPEN SOURCE</span><i data-lucide="asterisk"></i>
-            <span>ESP32</span><i data-lucide="asterisk"></i>
-            <span>软硬结合</span><i data-lucide="asterisk"></i>
-            <span>THREE.JS</span><i data-lucide="asterisk"></i>
+            <span>AI MODELS</span><svg class="icon" aria-hidden="true"><use href="#i-asterisk"></use></svg>
+            <span>AI AGENT</span><svg class="icon" aria-hidden="true"><use href="#i-asterisk"></use></svg>
+            <span>创意开发</span><svg class="icon" aria-hidden="true"><use href="#i-asterisk"></use></svg>
+            <span>WEBGL</span><svg class="icon" aria-hidden="true"><use href="#i-asterisk"></use></svg>
+            <span>OPEN SOURCE</span><svg class="icon" aria-hidden="true"><use href="#i-asterisk"></use></svg>
+            <span>ESP32</span><svg class="icon" aria-hidden="true"><use href="#i-asterisk"></use></svg>
+            <span>软硬结合</span><svg class="icon" aria-hidden="true"><use href="#i-asterisk"></use></svg>
+            <span>THREE.JS</span><svg class="icon" aria-hidden="true"><use href="#i-asterisk"></use></svg>
+            <span>PYTHON</span><svg class="icon" aria-hidden="true"><use href="#i-asterisk"></use></svg>
+            <span>GO</span><svg class="icon" aria-hidden="true"><use href="#i-asterisk"></use></svg>
+            <span>JAVA</span><svg class="icon" aria-hidden="true"><use href="#i-asterisk"></use></svg>
+            <span>SKILLS</span><svg class="icon" aria-hidden="true"><use href="#i-asterisk"></use></svg>
+            <span>VIBE CODING</span><svg class="icon" aria-hidden="true"><use href="#i-asterisk"></use></svg>
           </div>
         </div>
       </div>
@@ -117,7 +246,10 @@
 
     <!-- 02 / WORK -->
     <section class="sec sec-craft" id="work" data-sec="2">
-      <div class="sec-head mono" data-reveal>02 — WORK 作品</div>
+      <div class="work-intro">
+        <h2 class="sec-head mono" data-reveal>02 — WORK 作品</h2>
+        <p class="work-caption mono" data-reveal>SELECTED EXPERIMENTS<br>2024 — 2026 / OPEN SOURCE</p>
+      </div>
       <!--
         添加新项目：复制下面任意一个 <a class="row">...</a>，
         修改序号、标题、标签和 href 即可（data-reveal 的 --d 控制入场延迟）。
@@ -126,39 +258,67 @@
         <a class="row" href="https://github.com/AiFLYF/PaperWhisperer" target="_blank" rel="noopener" data-reveal data-hover style="--d:0s">
           <span class="row-idx mono">01</span>
           <h3>PAPERWHISPERER</h3>
-          <span class="row-tag mono">AI 文档分析工作台 / PYTHON</span>
-          <i data-lucide="arrow-up-right"></i>
+          <span class="row-tag mono"><i class="live">LIVE</i>AI 文档分析工作台 / PYTHON</span>
+          <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"></use></svg>
         </a>
         <a class="row" href="https://github.com/AiFLYF/FLYFWEB" target="_blank" rel="noopener" data-reveal data-hover style="--d:.06s">
           <span class="row-idx mono">02</span>
           <h3>FLYFWEB</h3>
           <span class="row-tag mono">本站 · 粒子实验 / THREE.JS</span>
-          <i data-lucide="arrow-up-right"></i>
+          <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"></use></svg>
         </a>
         <a class="row" href="https://github.com/AiFLYF/wuwu-intelligence" target="_blank" rel="noopener" data-reveal data-hover style="--d:.12s">
           <span class="row-idx mono">03</span>
           <h3>WUWU INTELLIGENCE</h3>
-          <span class="row-tag mono">一句话控制任意硬件 / AI AGENT</span>
-          <i data-lucide="arrow-up-right"></i>
+          <span class="row-tag mono"><i class="live">LIVE</i>一句话控制任意硬件 / AI AGENT</span>
+          <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"></use></svg>
         </a>
         <a class="row" href="https://github.com/AiFLYF/vibebridge" target="_blank" rel="noopener" data-reveal data-hover style="--d:.18s">
           <span class="row-idx mono">04</span>
           <h3>VIBEBRIDGE</h3>
-          <span class="row-tag mono">Vibe Coding 个人成长系统 / PYTHON</span>
-          <i data-lucide="arrow-up-right"></i>
+          <span class="row-tag mono"><i class="live">LIVE</i>Vibe Coding 个人成长系统 / PYTHON</span>
+          <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"></use></svg>
         </a>
-        <a class="row" href="https://www.modelscope.cn/models/FLYFAI/Invoice" target="_blank" rel="noopener" data-reveal data-hover style="--d:.24s">
+        <a class="row" href="https://github.com/AiFLYF/ming-tts-studio" target="_blank" rel="noopener" data-reveal data-hover style="--d:.24s">
           <span class="row-idx mono">05</span>
-          <h3>INVOICE</h3>
-          <span class="row-tag mono">发票识别 / 大模型微调</span>
-          <i data-lucide="arrow-up-right"></i>
+          <h3>MING TTS STUDIO</h3>
+          <span class="row-tag mono"><i class="live">LIVE</i>开源 TTS 声音工作台 / FASTAPI</span>
+          <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"></use></svg>
         </a>
-        <a class="row" href="https://www.modelscope.cn/profile/FLYFAI" target="_blank" rel="noopener" data-reveal data-hover style="--d:.30s">
+        <a class="row" href="https://github.com/AiFLYF/multi-agent-collab" target="_blank" rel="noopener" data-reveal data-hover style="--d:.30s">
           <span class="row-idx mono">06</span>
+          <h3>MULTI-AGENT COLLAB</h3>
+          <span class="row-tag mono"><i class="live">LIVE</i>多 AI 助手协作套件 / PYTHON</span>
+          <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"></use></svg>
+        </a>
+        <a class="row" href="https://github.com/AiFLYF/ego-link-esp32" target="_blank" rel="noopener" data-reveal data-hover style="--d:.36s">
+          <span class="row-idx mono">07</span>
+          <h3>EGO LINK</h3>
+          <span class="row-tag mono"><i class="live">LIVE</i>ESP32-S3 随身智能终端 / 进行中</span>
+          <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"></use></svg>
+        </a>
+        <a class="row" href="https://www.modelscope.cn/models/FLYFAI/Invoice" target="_blank" rel="noopener" data-reveal data-hover style="--d:.42s">
+          <span class="row-idx mono">08</span>
+          <h3>INVOICE</h3>
+          <span class="row-tag mono">发票识别 · GGUF 量化 / 大模型微调</span>
+          <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"></use></svg>
+        </a>
+        <a class="row" href="https://www.modelscope.cn/models/FLYFAI/Neko-1" target="_blank" rel="noopener" data-reveal data-hover style="--d:.48s">
+          <span class="row-idx mono">09</span>
+          <h3>NEKO V1</h3>
+          <span class="row-tag mono">猫娘人格微调 / 大模型微调</span>
+          <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"></use></svg>
+        </a>
+        <a class="row" href="https://www.modelscope.cn/profile/FLYFAI" target="_blank" rel="noopener" data-reveal data-hover style="--d:.54s">
+          <span class="row-idx mono">10</span>
           <h3>AI MODELS</h3>
           <span class="row-tag mono">模型主页 / MODELSCOPE</span>
-          <i data-lucide="arrow-up-right"></i>
+          <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"></use></svg>
         </a>
+      </div>
+      <div class="work-foot mono" data-reveal>
+        <span>10 PROJECTS / BUILT WITH CURIOSITY</span>
+        <a href="https://github.com/AiFLYF" target="_blank" rel="noopener" data-hover>MORE ON GITHUB <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"></use></svg></a>
       </div>
     </section>
 
@@ -172,21 +332,28 @@
           <span class="st-line" data-reveal style="--d:.18s"><em class="serif">together</em>.</span>
         </h2>
       </div>
-      <div class="cta-row" data-reveal style="--d:.28s">
+      <div class="contact-meta" data-reveal style="--d:.24s">
+        <p class="mono"><span class="live-dot" aria-hidden="true"></span>OPEN TO CREATIVE COLLABORATIONS</p>
+        <a class="contact-email" href="mailto:aiflyf@outlook.com" data-hover>aiflyf@outlook.com<svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"></use></svg></a>
+      </div>
+      <div class="cta-row" data-reveal style="--d:.30s">
         <a class="btn" href="https://github.com/AiFLYF" target="_blank" rel="noopener" data-hover>
-          <i data-lucide="github"></i><span>GITHUB — @AIFLYF</span>
+          <svg class="icon" aria-hidden="true"><use href="#i-github"></use></svg><span>GITHUB — @AIFLYF</span>
         </a>
         <a class="btn btn-ghost" href="https://www.modelscope.cn/profile/FLYFAI" target="_blank" rel="noopener" data-hover>
-          <i data-lucide="layers"></i><span>MODELSCOPE 魔搭</span>
+          <svg class="icon" aria-hidden="true"><use href="#i-layers"></use></svg><span>MODELSCOPE 魔搭</span>
+        </a>
+        <a class="btn btn-ghost" href="mailto:aiflyf@outlook.com" data-hover>
+          <svg class="icon" aria-hidden="true"><use href="#i-mail"></use></svg><span>MAIL 邮件</span>
         </a>
         <a class="btn btn-ghost" href="https://huggingface.co/FLYFAi" target="_blank" rel="noopener" data-hover>
-          <i data-lucide="bot"></i><span>HUGGING FACE</span>
+          <svg class="icon" aria-hidden="true"><use href="#i-bot"></use></svg><span>HUGGING FACE</span>
         </a>
       </div>
       <footer class="site-foot mono">
         <span>© 2026 FLYF — BUILT WITH THREE.JS</span>
         <span class="foot-mid">DEPLOYED ON GITHUB PAGES</span>
-        <button class="to-top" data-target="0" data-hover><i data-lucide="arrow-up"></i><span>TOP</span></button>
+        <a class="to-top" href="#index" data-target="0" data-hover><svg class="icon" aria-hidden="true"><use href="#i-arrow-up"></use></svg><span>TOP</span></a>
       </footer>
     </section>
 
@@ -200,7 +367,15 @@
     <div class="noscript mono">THIS EXPERIENCE REQUIRES JAVASCRIPT / 本站需要启用 JAVASCRIPT</div>
   </noscript>
 
-  <script src="assets/vendor/lucide.min.js"></script>
+  <script>
+    (() => {
+      const release = () => document.body.classList.add('is-loaded');
+      window.__flyfBootFallback = setTimeout(release, 6500);
+      window.addEventListener('error', (event) => {
+        if (event.target && event.target.tagName === 'SCRIPT') release();
+      }, true);
+    })();
+  </script>
   <script type="module" src="assets/js/app.js"></script>
 </body>
 </html>

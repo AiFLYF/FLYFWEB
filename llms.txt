@@ -1,0 +1,39 @@
+# FLYF
+
+> FLYF（账号名 AIFLYF / FLYFAI）是一名创意开发者，在 AI、Web 与嵌入式硬件之间工作：搭建 AI Agent、微调与训练大模型、做实时图形实验，也把代码烧进 ESP32。
+
+本站 https://aiflyf.github.io/FLYFWEB/ 是他的个人作品集，用 Three.js 渲染 70,000 个粒子，随滚动在四种形态间变形，分为 INDEX / ABOUT / WORK / CONTACT 四章。
+
+## 身份与联络
+
+- 名称：FLYF
+- 别名：AIFLYF（GitHub）、FLYFAI（魔搭 ModelScope / Hugging Face）
+- 角色：创意开发者 / Creative Developer
+- 方向：AI Agent、大模型微调、WebGL 实时图形、ESP32 软硬结合
+- 常用语言：Python、Go、Java、JavaScript
+- 邮箱：aiflyf@outlook.com
+- GitHub：https://github.com/AiFLYF
+- 魔搭 ModelScope：https://www.modelscope.cn/profile/FLYFAI
+- Hugging Face：https://huggingface.co/FLYFAi
+
+## 项目
+
+- [PaperWhisperer](https://github.com/AiFLYF/PaperWhisperer)：AI 文档分析工作台，上传 PDF / DOCX / PPTX / TXT 后生成结构化摘要、关键引用、Mermaid 图谱与追问式问答。在线演示：https://aiflyf.github.io/PaperWhisperer/
+- [FLYFWEB](https://github.com/AiFLYF/FLYFWEB)：本站。Three.js r160 自定义 GLSL 着色器，零构建、零外部请求，全部依赖本地化，部署于 GitHub Pages。
+- [WuWu Intelligence](https://github.com/AiFLYF/wuwu-intelligence)：用一句话控制任意硬件的 AI Agent 技能，面向 ESP32、LED 矩阵等嵌入式设备。在线演示：https://aiflyf.github.io/wuwu-intelligence
+- [VibeBridge](https://github.com/AiFLYF/vibebridge)：以 Vibe Coding 为入口的长期个人成长支持系统，强调静默观察与证据可追溯。在线演示：https://aiflyf.github.io/vibebridge/
+- [Ming TTS Studio](https://github.com/AiFLYF/ming-tts-studio)：Ming-3.0-tts 的开源 Web 声音工作台，10 个任务、117 个内置音色、WAV 导出；纯静态前端加可选多卡 FastAPI 后端。在线演示：https://aiflyf.github.io/ming-tts-studio/
+- [Multi-Agent Collab](https://github.com/AiFLYF/multi-agent-collab)：支持 Codex、Claude Code、Cursor 等 15 个 AI 编码平台的协作套件，共享 AGENTS.md，提供分支策略、文件占用协调、失联接管与本机看板；零依赖，Python 3.8+。在线演示：https://aiflyf.github.io/multi-agent-collab/
+- [Ego Link](https://github.com/AiFLYF/ego-link-esp32)：ESP32-S3-EYE 随身智能终端与自托管 Python 服务器的交互闭环实验，按 18 周课程逐周推进，目前进行中。在线演示：https://aiflyf.github.io/ego-link-esp32/
+
+## 模型（魔搭 ModelScope）
+
+- [Invoice](https://www.modelscope.cn/models/FLYFAI/Invoice)：基于 Qwen3-VL 微调的发票信息提取模型，另提供 GGUF 量化版。
+- [Invoice-GGUF](https://www.modelscope.cn/models/FLYFAI/Invoice-GGUF)：Invoice 的 GGUF 量化版本。
+- [Neko-1](https://www.modelscope.cn/models/FLYFAI/Neko-1)：猫娘人格微调模型（站点显示名 NEKO V1）。
+
+## 关于本站
+
+- 技术栈：Three.js r160、自定义 GLSL（simplex 噪声湍流、morph 目标、光标斥力）、原生 JavaScript、内联 Lucide SVG 图标
+- 字体：Clash Display、Space Mono、Instrument Serif，均为本地自托管
+- 无构建步骤，无外部请求；本地预览：`python -m http.server 9420`
