@@ -1,23 +1,25 @@
-# Hello, I'm FLYF
+# 你好，我是 FLYF
 
-**FLYF® — 创意开发者 / Creative Developer** · My personal site, built as an interactive WebGL experience.
+**FLYF® · 创意开发者** —— 这是我的个人主页，一个用 WebGL 做的交互作品集。
 
-70,000 GPU particles morph through four scroll-driven chapters — intro, about, work, contact — from a breathing sphere to the word **FLYF**, reshaped in real time by your scroll and cursor.
+70,000 个 GPU 粒子随滚动穿过 INDEX / ABOUT / WORK / CONTACT 四章：从一颗缓慢呼吸的球体散开，再一点点聚成 **FLYF** 字样，全程由你的滚动与光标实时重塑。
 
-**Live: https://aiflyf.github.io/FLYFWEB/**
+**线上地址：https://aiflyf.github.io/FLYFWEB/**
 
-## Stack
+## 技术栈
 
-- [Three.js](https://threejs.org) r160 — custom GLSL shaders (simplex-noise turbulence, morph targets, cursor repulsion)
-- Vanilla JS — inertia smooth-scroll, velocity type-skew, custom cursor, scroll-driven chapter system
-- Inline [Lucide](https://lucide.dev) symbols (only the 12 icons actually used) · Clash Display / Space Mono / Instrument Serif
-- Zero build step, zero external requests — fonts and Three.js are vendored, icons ship inline, deployed straight to GitHub Pages
+- [Three.js](https://threejs.org) r160 —— 自定义 GLSL 着色器：单纯形噪声湍流、morph 目标、光标斥力场
+- 原生 JavaScript —— 惯性平滑滚动、按滚动速度倾斜的字形、自定义光标、由滚动驱动的章节系统
+- 内联 [Lucide](https://lucide.dev) 图标（只保留实际用到的 12 个）· Clash Display / Space Mono / Instrument Serif 三套自托管字体
+- 零构建步骤、零外部请求 —— 字体与 Three.js 全部本地存放，图标直接内联，部署到 GitHub Pages 即可上线
 
-## Run locally
+## 本地预览
 
 ```bash
 python -m http.server 9420
-# open http://localhost:9420
+# 浏览器打开 http://localhost:9420
 ```
 
-Licenses for vendored assets: [assets/vendor/LICENSES.md](assets/vendor/LICENSES.md)
+窄屏设备会把粒子数降到 26,000，用来换取更稳的帧率。
+
+第三方资源的许可信息见 [assets/vendor/LICENSES.md](assets/vendor/LICENSES.md)
