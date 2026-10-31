@@ -2,7 +2,7 @@
 
 > FLYF（账号名 AIFLYF / FLYFAI）是一名创意开发者，在 AI、Web 与嵌入式硬件之间工作：搭建 AI Agent、微调与训练大模型、做实时图形实验，也把代码烧进 ESP32。
 
-本站 https://aiflyf.github.io/FLYFWEB/ 是他的个人作品集，用 Three.js 渲染 70,000 个粒子，随滚动在四种形态间变形，分为 INDEX / ABOUT / WORK / CONTACT 四章。
+本站 https://aiflyf.github.io/FLYFWEB/ 是他的个人作品集：70,000 个 GPU 粒子随滚动在 INDEX / ABOUT / WORK / CONTACT 四章之间依次化成四种形态——斐波那契球壳、环面纽结、起伏波场，最后收束成 FLYF 字样，变形全程由滚动与光标驱动。
 
 ## 身份与联络
 
@@ -34,6 +34,7 @@
 
 ## 关于本站
 
-- 技术栈：Three.js r160、自定义 GLSL（simplex 噪声湍流、morph 目标、光标斥力）、原生 JavaScript、内联 Lucide SVG 图标
+- 技术栈：Three.js r160、自定义 GLSL（单纯形噪声湍流、morph 目标、光标斥力场）、原生 JavaScript（惯性平滑滚动、速度倾斜字形、自定义光标、滚动驱动章节）、内联 Lucide SVG 图标（共 12 个）
+- 粒子数：桌面 70,000，窄屏设备降为 26,000 以保证帧率
 - 字体：Clash Display、Space Mono、Instrument Serif，均为本地自托管
 - 无构建步骤，无外部请求；本地预览：`python -m http.server 9420`

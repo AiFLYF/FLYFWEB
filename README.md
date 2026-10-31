@@ -2,7 +2,7 @@
 
 **FLYF® · 创意开发者** —— 这是我的个人主页，一个用 WebGL 做的交互作品集。
 
-70,000 个 GPU 粒子随滚动穿过 INDEX / ABOUT / WORK / CONTACT 四章：从一颗缓慢呼吸的球体散开，再一点点聚成 **FLYF** 字样，全程由你的滚动与光标实时重塑。
+70,000 个 GPU 粒子随滚动穿过 INDEX / ABOUT / WORK / CONTACT 四章，依次化成四种形态：斐波那契球壳、环面纽结、起伏波场，最后收束成 **FLYF** 字样——每一次变形都由你的滚动与光标实时驱动。
 
 **线上地址：https://aiflyf.github.io/FLYFWEB/**
 
