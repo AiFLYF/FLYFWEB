@@ -852,6 +852,7 @@ body.is-loaded [data-load] { opacity: 1; transform: none; }
 
 /* ---------- per-char reveals ---------- */
 
+.wd { display: inline-block; white-space: nowrap; }
 .ch { display: inline-block; }
 
 /* hero title: line-level mask stays, chars take over the motion once split */

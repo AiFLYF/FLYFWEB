@@ -177,16 +177,22 @@ if (marqueeGroup) {
 function splitChars(el, baseDelay, step) {
   let i = 0;
   const wrap = (node) => {
-    const text = node.textContent;
     const frag = document.createDocumentFragment();
-    for (const c of text) {
-      if (/\s/.test(c)) { frag.appendChild(document.createTextNode(c)); continue; }
-      const s = document.createElement('span');
-      s.className = 'ch';
-      s.textContent = c;
-      s.style.setProperty('--cd', `${(baseDelay + i * step).toFixed(3)}s`);
-      frag.appendChild(s);
-      i++;
+    for (const token of node.textContent.split(/(\s+)/)) {
+      if (!token) continue;
+      if (/^\s+$/.test(token)) { frag.appendChild(document.createTextNode(' ')); continue; }
+      // keep each word unbreakable; only the gaps between words may wrap
+      const w = document.createElement('span');
+      w.className = 'wd';
+      for (const c of token) {
+        const s = document.createElement('span');
+        s.className = 'ch';
+        s.textContent = c;
+        s.style.setProperty('--cd', `${(baseDelay + i * step).toFixed(3)}s`);
+        w.appendChild(s);
+        i++;
+      }
+      frag.appendChild(w);
     }
     node.replaceWith(frag);
   };
