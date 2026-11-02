@@ -140,8 +140,18 @@ function setActive(i) {
     if (k === i) b.setAttribute('aria-current', 'location');
     else b.removeAttribute('aria-current');
   });
-  if (chapterNum) chapterNum.textContent = String(i).padStart(2, '0');
-  if (chapterName) chapterName.textContent = sections[i]?.id.toUpperCase() || 'INDEX';
+  if (chapterNum) {
+    chapterNum.textContent = String(i).padStart(2, '0');
+    chapterNum.classList.remove('roll');
+    void chapterNum.offsetWidth; // restart the roll animation
+    chapterNum.classList.add('roll');
+  }
+  if (chapterName) {
+    chapterName.textContent = sections[i]?.id.toUpperCase() || 'INDEX';
+    chapterName.classList.remove('roll');
+    void chapterName.offsetWidth;
+    chapterName.classList.add('roll');
+  }
 }
 
 /* ---------- reveal on scroll ---------- */
@@ -202,19 +212,22 @@ document.querySelectorAll('.row h3').forEach((el) => splitChars(el, 0, 0.018));
 
 const ghostEls = reduced ? [] : [...document.querySelectorAll('[data-ghost]')];
 
-/* ---------- magnetic buttons ---------- */
+/* ---------- magnetic buttons (JS drives mag + lift + press on fine pointers) ---------- */
 
 const magState = new Map();
 if (finePointer && !reduced) {
   document.querySelectorAll('.btn, .hero-cta').forEach((el) => {
-    const st = { x: 0, y: 0, tx: 0, ty: 0 };
+    const st = { mx: 0, my: 0, tx: 0, ty: 0, lift: 0, liftT: 0, press: 1, pressT: 1 };
     magState.set(el, st);
+    el.addEventListener('pointerenter', () => { st.liftT = 3; });
     el.addEventListener('pointermove', (e) => {
       const r = el.getBoundingClientRect();
-      st.tx = clamp((e.clientX - (r.left + r.width / 2)) * 0.18, -9, 9);
-      st.ty = clamp((e.clientY - (r.top + r.height / 2)) * 0.22, -7, 7);
+      st.tx = clamp((e.clientX - (r.left + r.width / 2)) * 0.22, -10, 10);
+      st.ty = clamp((e.clientY - (r.top + r.height / 2)) * 0.26, -8, 8);
     });
-    el.addEventListener('pointerleave', () => { st.tx = 0; st.ty = 0; });
+    el.addEventListener('pointerleave', () => { st.tx = 0; st.ty = 0; st.liftT = 0; st.pressT = 1; });
+    el.addEventListener('pointerdown', () => { st.pressT = 0.96; });
+    el.addEventListener('pointerup', () => { st.pressT = 1; });
   });
 }
 
@@ -723,13 +736,18 @@ function frame(now) {
       const rel = (r.top + r.height / 2 - innerHeight / 2) / innerHeight;
       g.style.transform = `translate3d(0, ${(rel * -110).toFixed(1)}px, 0)`;
     }
-    // magnetic buttons
+    // magnetic buttons — compose the whole transform in JS so it truly tracks
     for (const [el, st] of magState) {
-      st.x = damp(st.x, st.tx, 10, dt);
-      st.y = damp(st.y, st.ty, 10, dt);
-      if (Math.abs(st.x) > 0.05 || Math.abs(st.y) > 0.05 || st.tx !== 0 || st.ty !== 0) {
-        el.style.setProperty('--magx', `${st.x.toFixed(2)}px`);
-        el.style.setProperty('--magy', `${st.y.toFixed(2)}px`);
+      st.mx = damp(st.mx, st.tx, 18, dt);
+      st.my = damp(st.my, st.ty, 18, dt);
+      st.lift = damp(st.lift, st.liftT, 12, dt);
+      st.press = damp(st.press, st.pressT, 16, dt);
+      const engaged = Math.abs(st.mx) > 0.05 || Math.abs(st.my) > 0.05 || st.lift > 0.05 ||
+        Math.abs(st.press - 1) > 0.002 || st.tx !== 0 || st.ty !== 0 || st.liftT !== 0 || st.pressT !== 1;
+      if (engaged) {
+        el.style.transform = `translate(${st.mx.toFixed(2)}px, ${st.my.toFixed(2)}px) translateY(${(-st.lift).toFixed(2)}px) scale(${st.press.toFixed(3)})`;
+      } else if (el.style.transform) {
+        el.style.transform = '';
       }
     }
     // cursor
