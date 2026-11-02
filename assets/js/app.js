@@ -71,7 +71,7 @@ class SmoothScroll {
     if (!this.enabled) { this.c = window.scrollY; return this.c; }
     this.c = damp(this.c, this.t, 7.5, dt);
     if (Math.abs(this.c - this.t) < 0.05) this.c = this.t;
-    window.scrollTo(0, this.c);
+    if (Math.abs(window.scrollY - this.c) > 0.5) window.scrollTo(0, this.c); // skip no-op writes at rest
     return this.c;
   }
 }
@@ -278,13 +278,13 @@ if (finePointer && !reduced) {
 /* ---------- velocity skew ---------- */
 
 const skewEls = [...document.querySelectorAll('[data-skew]')];
-let skewCur = 0;
+let skewCur = 0, skewApplied = 0;
 
 /* ---------- hero parallax / misc ---------- */
 
 const heroInner = document.querySelector('.hero-inner');
 const progressBar = document.getElementById('scrollProgress');
-let heroFaded = false;
+let heroFaded = false, heroFadeApplied = '', heroShiftApplied = -1;
 
 /* ============================================================
    THREE.JS — the particle field
@@ -523,6 +523,7 @@ void main(){
 
 let renderer, scene, camera, points, uni;
 let progT = 0, progC = 0, glTime = 0, introT = reduced ? 1 : 0;
+let lastRenderSig = '';
 let hasPointer = false;
 const mouseW = new THREE.Vector3(999, 999, 0); // repulsion parked off-field until first pointer move
 const mouseT = new THREE.Vector3(0, 0, 0);
@@ -605,6 +606,13 @@ function renderGL(dt) {
   if (!reduced) glTime += dt;
   progC = reduced ? progT : damp(progC, progT, 4.5, dt);
 
+  // reduced motion: nothing animates on its own — only redraw when scroll progress changes
+  if (reduced) {
+    const sig = `${progC.toFixed(4)}|${innerWidth}x${innerHeight}`;
+    if (sig === lastRenderSig) return;
+    lastRenderSig = sig;
+  }
+
   // big-bang intro: collapse the star shell once the preloader lifts
   if (introT < 1 && document.body.classList.contains('is-loaded')) {
     introT = Math.min(1, introT + dt / 1.7);
@@ -633,7 +641,7 @@ function renderGL(dt) {
 
   uni.uNoise.value = lerp(A.noise, B.noise, sf) * (reduced ? 0.5 : 1);
   uni.uOpacity.value = lerp(A.op, B.op, sf);
-  uni.uMouseF.value = finePointer ? lerp(A.mouseF, B.mouseF, sf) : 0;
+  uni.uMouseF.value = finePointer && !reduced ? lerp(A.mouseF, B.mouseF, sf) : 0;
   uni.uColB.value.lerpColors(A.colB, B.colB, sf);
   uni.uProg.value = progC;
   uni.uTime.value = glTime;
@@ -716,23 +724,28 @@ function frame(now) {
   if (progressBar) progressBar.style.transform = `scaleX(${clamp(y / smooth.max, 0, 1)})`;
 
   if (!reduced) {
-    // velocity skew on big type
+    // velocity skew on big type — write only while actually skewing
     const target = clamp(vel * 0.0032, -3, 3);
     skewCur = damp(skewCur, target, 8, dt);
     const sk = Math.abs(skewCur) < 0.01 ? 0 : skewCur;
-    for (const el of skewEls) el.style.transform = `skewY(${sk}deg)`;
+    if (sk !== 0 || skewApplied !== 0) {
+      for (const el of skewEls) el.style.transform = `skewY(${sk}deg)`;
+      skewApplied = sk;
+    }
     // hero parallax + early fade so it never ghosts into the next chapter
     if (heroInner) {
       const fade = clamp(1 - Math.max(0, y - innerHeight * 0.03) / (innerHeight * 0.48), 0, 1);
       const faded = fade <= 0.01;
-      heroInner.style.opacity = fade === 1 ? '' : String(fade);
+      const fadeStr = fade === 1 ? '' : fade.toFixed(3);
+      if (fadeStr !== heroFadeApplied) { heroInner.style.opacity = fadeStr; heroFadeApplied = fadeStr; }
       heroInner.classList.toggle('is-faded', faded);
       if (faded !== heroFaded) {
         heroFaded = faded;
         heroInner.querySelectorAll('a, button').forEach((el) => { el.tabIndex = faded ? -1 : 0; });
       }
       if (y < innerHeight * 1.2) {
-        heroInner.style.transform = `translate3d(0, ${y * 0.22}px, 0)`;
+        const ty = Math.round(y * 22) / 100;
+        if (ty !== heroShiftApplied) { heroInner.style.transform = `translate3d(0, ${ty}px, 0)`; heroShiftApplied = ty; }
       }
     }
     // ghost watermark parallax — drifts against scroll for depth
