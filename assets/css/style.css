@@ -130,7 +130,7 @@ a, button { touch-action: manipulation; -webkit-tap-highlight-color: rgba(198, 2
 .vignette {
   position: fixed;
   inset: 0;
-  z-index: 3;
+  z-index: 1; /* 压暗粒子层的四角，不再罩住文字层（原 z-index:3 会稀释边缘标题，如首屏 FLYF 的末字 F） */
   pointer-events: none;
   background: radial-gradient(ellipse 120% 100% at 50% 50%, transparent 55%, rgba(4, 4, 5, 0.55) 100%);
 }
@@ -449,6 +449,8 @@ body.is-loaded .ht-line { transform: translateY(0); }
   -webkit-text-stroke: clamp(1px, 0.16vw, 2.5px) var(--ink);
 }
 .ht-sup { display: inline-block; vertical-align: super; margin-left: 0.05em; }
+/* 巨型字标的字母逐个独立、等距排列（覆盖字体的自然字偶距） */
+.hero-title .wd { display: inline-flex; column-gap: 0.05em; }
 .ht-sup svg {
   width: clamp(20px, 4.5vw, 64px);
   height: clamp(20px, 4.5vw, 64px);
