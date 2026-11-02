@@ -116,12 +116,12 @@ document.querySelectorAll('[data-target]').forEach((el) => {
     const id = sections[i]?.id;
     if (id) history.replaceState(null, '', `#${id}`);
   });
+});
 
 window.addEventListener('hashchange', () => {
   const target = document.getElementById(location.hash.slice(1));
   const i = sections.indexOf(target);
   if (i >= 0) smooth.to(tops[i] + 2);
-});
 });
 
 let activeIdx = -1;
@@ -157,7 +157,9 @@ document.querySelectorAll('[data-reveal]').forEach((el) => io.observe(el));
 
 const marqueeGroup = document.getElementById('marqueeGroup');
 if (marqueeGroup) {
-  marqueeGroup.parentElement.appendChild(marqueeGroup.cloneNode(true));
+  const clone = marqueeGroup.cloneNode(true);
+  clone.removeAttribute('id'); // avoid duplicate IDs in the DOM
+  marqueeGroup.parentElement.appendChild(clone);
 }
 
 /* ---------- custom cursor ---------- */
@@ -560,7 +562,10 @@ window.__FLYF__ = {
 
 const preCount = document.getElementById('preCount');
 const preBar = document.getElementById('preBar');
-const LOAD_MS = reduced ? 200 : 1700;
+// First visit gets the full intro; repeat visits in the same session fast-forward.
+let seenBefore = false;
+try { seenBefore = sessionStorage.getItem('flyf-seen') === '1'; } catch { /* storage blocked */ }
+const LOAD_MS = reduced ? 200 : seenBefore ? 550 : 1700;
 const loadStart = performance.now();
 
 function loaderTick(now) {
@@ -569,6 +574,7 @@ function loaderTick(now) {
   preCount.textContent = String(Math.floor(eased * 100)).padStart(2, '0');
   preBar.style.transform = `scaleX(${eased})`;
   if (p < 1) { requestAnimationFrame(loaderTick); return; }
+  try { sessionStorage.setItem('flyf-seen', '1'); } catch { /* storage blocked */ }
   fontsSettled.then(() => {
     clearTimeout(window.__flyfBootFallback);
     document.body.classList.add('is-loaded');
