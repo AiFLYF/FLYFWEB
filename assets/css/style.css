@@ -363,6 +363,7 @@ body.is-loaded .side-index { opacity: 1; }
   display: flex;
   flex-direction: column;
   justify-content: center;
+  overflow-x: clip; /* ghost watermark bleeds off-edge without creating scroll */
 }
 .sec::before {
   content: "";
@@ -495,10 +496,13 @@ body.is-loaded .ht-line { transform: translateY(0); }
 .hero-cta .mono { font-size: 10px; line-height: 1.2; letter-spacing: .12em; white-space: nowrap; }
 .hero-cta .mono br { display: none; }
 .hero-cta svg { width: 16px; height: 16px; transition: transform .4s var(--ease-out); }
+.hero-cta {
+  transform: translate(var(--magx, 0px), var(--magy, 0px));
+}
 .hero-cta:hover {
   background: var(--ink);
   border-color: var(--ink);
-  transform: translateY(-3px);
+  transform: translate(var(--magx, 0px), var(--magy, 0px)) translateY(-3px);
   box-shadow: 0 14px 40px rgba(237,234,226,.18);
 }
 .hero-cta:hover svg { transform: translate(3px, 3px); }
@@ -791,8 +795,9 @@ body.is-loaded [data-load] { opacity: 1; transform: none; }
   color: #0a0a0a;
   transition: background 0.4s var(--ease-out), color 0.4s, border-color 0.4s, transform 0.4s var(--ease-out);
 }
+.btn { transform: translate(var(--magx, 0px), var(--magy, 0px)); }
 .btn svg { width: 16px; height: 16px; }
-.btn:hover { background: var(--acc); border-color: var(--acc); transform: translateY(-3px); }
+.btn:hover { background: var(--acc); border-color: var(--acc); transform: translate(var(--magx, 0px), var(--magy, 0px)) translateY(-3px); }
 .btn-ghost {
   background: rgba(7,7,8,.55);
   -webkit-backdrop-filter: blur(10px);
@@ -800,7 +805,7 @@ body.is-loaded [data-load] { opacity: 1; transform: none; }
   color: var(--ink);
   border-color: var(--line);
 }
-.btn-ghost:hover { background: rgba(7,7,8,.7); border-color: var(--acc); color: var(--acc); transform: translateY(-3px); }
+.btn-ghost:hover { background: rgba(7,7,8,.7); border-color: var(--acc); color: var(--acc); transform: translate(var(--magx, 0px), var(--magy, 0px)) translateY(-3px); }
 
 .site-foot {
   margin-top: auto;
@@ -822,6 +827,55 @@ body.is-loaded [data-load] { opacity: 1; transform: none; }
 }
 .to-top svg { width: 14px; height: 14px; color: var(--acc); transition: transform 0.35s var(--ease-out); }
 .to-top:hover svg { transform: translateY(-4px); }
+
+/* ---------- ghost watermark words ---------- */
+
+.ghost-word {
+  position: absolute;
+  z-index: 0;
+  font-family: var(--disp);
+  font-weight: 700;
+  font-size: clamp(9rem, 24vw, 22rem);
+  line-height: 0.78;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(237, 234, 226, 0.08);
+  pointer-events: none;
+  user-select: none;
+  white-space: nowrap;
+  will-change: transform;
+}
+.sec-manifesto .ghost-word { top: 7%; right: -4%; }
+.sec-craft .ghost-word { bottom: 6%; right: -3%; top: auto; }
+.sec-contact .ghost-word { top: 9%; right: -2%; }
+
+/* ---------- per-char reveals ---------- */
+
+.ch { display: inline-block; }
+
+/* hero title: line-level mask stays, chars take over the motion once split */
+.js .ht-line.split { transform: none; transition: none; }
+.js .ht-line.split .ch {
+  transform: translateY(115%) rotate(4deg);
+  transform-origin: left bottom;
+  transition: transform 1.1s var(--ease-out) var(--cd, 0s);
+}
+body.is-loaded .ht-line.split .ch { transform: translateY(0) rotate(0deg); }
+
+/* statement lines: char stagger replaces the block reveal once split */
+.js .st-line.split { opacity: 1; transform: none; transition: none; }
+.js .st-line.split .ch {
+  opacity: 0;
+  transform: translateY(0.55em) rotate(3deg);
+  transform-origin: left bottom;
+  transition: opacity 0.7s ease var(--cd, 0s), transform 0.9s var(--ease-out) var(--cd, 0s);
+}
+.js .st-line.split.in-view .ch { opacity: 1; transform: translateY(0) rotate(0deg); }
+
+/* work rows: char ripple on hover */
+.row h3 .ch { transition: transform 0.4s var(--ease-out) var(--cd, 0s); }
+.row:hover h3 .ch, .row:focus-visible h3 .ch { transform: translateY(-0.07em); }
 
 /* ---------- reveal on scroll ---------- */
 
@@ -940,7 +994,7 @@ body.no-webgl .bg-glow {
   .hero-cta .mono { font-size: 10px; letter-spacing: .1em; white-space: nowrap; }
   .hero-cta .mono br { display: none; }
   .hero-cta svg { width: 16px; height: 16px; color: #070708; }
-  .hero-cta:hover { background: var(--ink); border-color: var(--ink); transform: translateY(-2px); }
+  .hero-cta:hover { background: var(--ink); border-color: var(--ink); transform: translate(var(--magx, 0px), var(--magy, 0px)) translateY(-2px); }
   .chapter-status { bottom: 14px; }
   .sec-contact {
     padding-top: max(72px, 11vh);
@@ -1047,6 +1101,8 @@ body.no-webgl .bg-glow {
     transition-delay: 0s !important;
   }
   .js [data-reveal], .js [data-load], .js .ht-line { opacity: 1; transform: none; }
+  .js .ht-line.split .ch, .js .st-line.split .ch { opacity: 1; transform: none; }
+  .row:hover h3 .ch, .row:focus-visible h3 .ch { transform: none; }
   .marquee-track, .brand-ast { animation: none; }
   .hero-cta:hover { transform: none; }
   .row:hover h3, .row:focus-visible h3, .cap-card:hover { transform: none; }

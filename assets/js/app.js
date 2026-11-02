@@ -162,7 +162,61 @@ if (marqueeGroup) {
   marqueeGroup.parentElement.appendChild(clone);
 }
 
-/* ---------- custom cursor ---------- */
+/* ---------- per-char splitting (stagger reveals / hover ripple) ---------- */
+
+function splitChars(el, baseDelay, step) {
+  let i = 0;
+  const wrap = (node) => {
+    const text = node.textContent;
+    const frag = document.createDocumentFragment();
+    for (const c of text) {
+      if (/\s/.test(c)) { frag.appendChild(document.createTextNode(c)); continue; }
+      const s = document.createElement('span');
+      s.className = 'ch';
+      s.textContent = c;
+      s.style.setProperty('--cd', `${(baseDelay + i * step).toFixed(3)}s`);
+      frag.appendChild(s);
+      i++;
+    }
+    node.replaceWith(frag);
+  };
+  [...el.childNodes].forEach((n) => {
+    if (n.nodeType === Node.TEXT_NODE) wrap(n);
+    else if (n.nodeType === Node.ELEMENT_NODE && !n.classList.contains('ht-sup') && !n.querySelector('svg')) {
+      [...n.childNodes].forEach((cn) => { if (cn.nodeType === Node.TEXT_NODE) wrap(cn); });
+    }
+  });
+  el.classList.add('split');
+}
+
+if (!reduced) {
+  document.querySelectorAll('.ht-line').forEach((el, li) => splitChars(el, 0.05 + li * 0.16, 0.055));
+  document.querySelectorAll('.st-line').forEach((el) => {
+    splitChars(el, parseFloat(el.style.getPropertyValue('--d')) || 0, 0.028);
+  });
+}
+// row hover ripple is harmless with reduced motion (disabled in CSS), split always
+document.querySelectorAll('.row h3').forEach((el) => splitChars(el, 0, 0.018));
+
+/* ---------- ghost watermark parallax ---------- */
+
+const ghostEls = reduced ? [] : [...document.querySelectorAll('[data-ghost]')];
+
+/* ---------- magnetic buttons ---------- */
+
+const magState = new Map();
+if (finePointer && !reduced) {
+  document.querySelectorAll('.btn, .hero-cta').forEach((el) => {
+    const st = { x: 0, y: 0, tx: 0, ty: 0 };
+    magState.set(el, st);
+    el.addEventListener('pointermove', (e) => {
+      const r = el.getBoundingClientRect();
+      st.tx = clamp((e.clientX - (r.left + r.width / 2)) * 0.18, -9, 9);
+      st.ty = clamp((e.clientY - (r.top + r.height / 2)) * 0.22, -7, 7);
+    });
+    el.addEventListener('pointerleave', () => { st.tx = 0; st.ty = 0; });
+  });
+}
 
 const dotEl = document.querySelector('.c-dot');
 const ringEl = document.querySelector('.c-ring');
@@ -220,11 +274,12 @@ let heroFaded = false;
 const glState = { ok: false };
 
 const CHAPTERS = [
-  { rx: 0.18, ry: 0.0, rz: 0.0, z: 4.8, noise: 0.10, mouseF: 1.0, op: 0.9 },   // 00 sphere
-  { rx: 0.55, ry: 0.9, rz: -0.14, z: 5.6, noise: 0.16, mouseF: 1.0, op: 0.85 }, // 01 torus knot
-  { rx: -1.02, ry: 0.0, rz: 0.06, z: 4.3, noise: 0.09, mouseF: 0.7, op: 0.36 },  // 02 wave field
-  { rx: 0.0, ry: 0.0, rz: 0.0, z: 4.7, noise: 0.035, mouseF: 0.9, op: 0.95 },   // 03 FLYF
+  { rx: 0.18, ry: 0.0, rz: 0.0, z: 4.8, noise: 0.10, mouseF: 1.0, op: 0.9, cb: '#C6FF4A' },   // 00 sphere — acid
+  { rx: 0.55, ry: 0.9, rz: -0.14, z: 5.6, noise: 0.16, mouseF: 1.0, op: 0.85, cb: '#9A8CFF' }, // 01 torus knot — violet
+  { rx: -1.02, ry: 0.0, rz: 0.06, z: 4.3, noise: 0.09, mouseF: 0.7, op: 0.36, cb: '#6FE3FF' },  // 02 wave field — cyan
+  { rx: 0.0, ry: 0.0, rz: 0.0, z: 4.7, noise: 0.035, mouseF: 0.9, op: 0.95, cb: '#C6FF4A' },   // 03 FLYF — acid
 ];
+CHAPTERS.forEach((c) => { c.colB = new THREE.Color(c.cb); });
 
 function buildTargets(count) {
   const p0 = new Float32Array(count * 3);
@@ -281,7 +336,19 @@ function buildTargets(count) {
     rnd[i * 4 + 2] = Math.random();
     rnd[i * 4 + 3] = Math.random();
   }
-  return { p0, p1, p2, p3, rnd };
+
+  // intro — particles start as a distant star shell and collapse into chapter 00
+  const start = new Float32Array(count * 3);
+  for (let i = 0; i < count; i++) {
+    const r = 11 + Math.random() * 9;
+    const th = Math.random() * Math.PI * 2;
+    const ph = Math.acos(2 * Math.random() - 1);
+    start[i * 3] = r * Math.sin(ph) * Math.cos(th);
+    start[i * 3 + 1] = r * Math.sin(ph) * Math.sin(th);
+    start[i * 3 + 2] = r * Math.cos(ph);
+  }
+
+  return { p0, p1, p2, p3, rnd, start };
 }
 
 function sampleText(str) {
@@ -316,11 +383,14 @@ attribute vec3 aT1;
 attribute vec3 aT2;
 attribute vec3 aT3;
 attribute vec4 aRand;
+attribute vec3 aStart;
 uniform float uTime;
 uniform float uProg;
+uniform float uIntro;
 uniform float uNoise;
 uniform vec3  uMouse;
 uniform float uMouseF;
+uniform float uSwirl;
 uniform float uSize;
 varying float vMix;
 varying float vFade;
@@ -375,7 +445,8 @@ void main(){
   float s2 = smoothstep(0.0, 1.0, clamp(uProg - 1.0, 0.0, 1.0));
   float s3 = smoothstep(0.0, 1.0, clamp(uProg - 2.0, 0.0, 1.0));
 
-  vec3 pos = mix(position, aT1, s1);
+  vec3 base = mix(aStart, position, uIntro);
+  vec3 pos = mix(base, aT1, s1);
   pos = mix(pos, aT2, s2);
   pos = mix(pos, aT3, s3);
 
@@ -394,11 +465,14 @@ void main(){
   float waveW = s2 * (1.0 - s3);
   pos.y += waveW * sin(pos.x * 2.1 + uTime * 1.1) * cos(pos.z * 1.7 + uTime * 0.8) * 0.24;
 
-  // cursor repulsion in world space
+  // cursor repulsion + orbital swirl in world space
   vec4 wp = modelMatrix * vec4(pos, 1.0);
   vec3 dm = wp.xyz - uMouse;
-  float f = smoothstep(0.95, 0.0, length(dm)) * uMouseF;
-  wp.xyz += normalize(dm + 0.0001) * f * 0.34;
+  float dl = length(dm);
+  float f = smoothstep(0.95, 0.0, dl) * uMouseF;
+  vec3 dn = dm / max(dl, 0.0001);
+  vec3 sw = cross(vec3(0.0, 0.0, 1.0), dn);
+  wp.xyz += (dn * 0.34 + sw * 0.26 * uSwirl) * f;
 
   vec4 mv = viewMatrix * wp;
   gl_Position = projectionMatrix * mv;
@@ -429,7 +503,7 @@ void main(){
 `;
 
 let renderer, scene, camera, points, uni;
-let progT = 0, progC = 0, glTime = 0;
+let progT = 0, progC = 0, glTime = 0, introT = reduced ? 1 : 0;
 let hasPointer = false;
 const mouseW = new THREE.Vector3(999, 999, 0); // repulsion parked off-field until first pointer move
 const mouseT = new THREE.Vector3(0, 0, 0);
@@ -449,7 +523,7 @@ function initGL() {
 
   const small = Math.min(innerWidth, innerHeight) < 720 || !finePointer;
   const COUNT = small ? 26000 : 70000;
-  const { p0, p1, p2, p3, rnd } = buildTargets(COUNT);
+  const { p0, p1, p2, p3, rnd, start } = buildTargets(COUNT);
 
   const geo = new THREE.BufferGeometry();
   geo.setAttribute('position', new THREE.BufferAttribute(p0, 3));
@@ -457,16 +531,19 @@ function initGL() {
   geo.setAttribute('aT2', new THREE.BufferAttribute(p2, 3));
   geo.setAttribute('aT3', new THREE.BufferAttribute(p3, 3));
   geo.setAttribute('aRand', new THREE.BufferAttribute(rnd, 4));
+  geo.setAttribute('aStart', new THREE.BufferAttribute(start, 3));
 
   uni = {
     uTime: { value: 0 },
     uProg: { value: 0 },
+    uIntro: { value: reduced ? 1 : 0 },
     uNoise: { value: CHAPTERS[0].noise },
     uMouse: { value: mouseW },
     uMouseF: { value: finePointer ? 1 : 0 },
+    uSwirl: { value: reduced ? 0 : 1 },
     uSize: { value: (small ? 5.2 : 4.1) * dpr },
     uColA: { value: new THREE.Color('#EDEAE2') },
-    uColB: { value: new THREE.Color('#C6FF4A') },
+    uColB: { value: new THREE.Color(CHAPTERS[0].cb) },
     uOpacity: { value: 0.9 },
   };
 
@@ -509,6 +586,13 @@ function renderGL(dt) {
   if (!reduced) glTime += dt;
   progC = reduced ? progT : damp(progC, progT, 4.5, dt);
 
+  // big-bang intro: collapse the star shell once the preloader lifts
+  if (introT < 1 && document.body.classList.contains('is-loaded')) {
+    introT = Math.min(1, introT + dt / 1.7);
+  }
+  const introEase = 1 - Math.pow(1 - introT, 3);
+  uni.uIntro.value = introEase;
+
   const i = clamp(Math.floor(progC), 0, 2);
   const f = progC - i;
   const sf = f * f * (3 - 2 * f);
@@ -519,11 +603,11 @@ function renderGL(dt) {
 
   points.rotation.set(
     lerp(A.rx, B.rx, sf),
-    lerp(A.ry, B.ry, sf) + idle,
+    lerp(A.ry, B.ry, sf) + idle + (1 - introEase) * 0.55,
     lerp(A.rz, B.rz, sf)
   );
   const zoomOut = camera.aspect < 0.8 ? 1.45 : 1; // portrait: pull back so shapes fit the narrow view
-  camera.position.z = lerp(A.z, B.z, sf) * zoomOut;
+  camera.position.z = lerp(A.z, B.z, sf) * zoomOut + (1 - introEase) * 2.4;
   camera.position.x = damp(camera.position.x, mouseT.x * 0.22, 3, dt);
   camera.position.y = damp(camera.position.y, mouseT.y * 0.16, 3, dt);
   camera.lookAt(0, 0, 0);
@@ -531,6 +615,7 @@ function renderGL(dt) {
   uni.uNoise.value = lerp(A.noise, B.noise, sf) * (reduced ? 0.5 : 1);
   uni.uOpacity.value = lerp(A.op, B.op, sf);
   uni.uMouseF.value = finePointer ? lerp(A.mouseF, B.mouseF, sf) : 0;
+  uni.uColB.value.lerpColors(A.colB, B.colB, sf);
   uni.uProg.value = progC;
   uni.uTime.value = glTime;
 
@@ -556,6 +641,8 @@ window.__FLYF__ = {
   get prog() { return progC; },
   get renderCalls() { return renderer ? renderer.info.render.calls : -1; },
   get frame() { return renderer ? renderer.info.render.frame : -1; },
+  get intro() { return uni ? uni.uIntro.value : -1; },
+  get colB() { return uni ? uni.uColB.value.getHexString() : null; },
 };
 
 /* ---------- preloader ---------- */
@@ -627,6 +714,22 @@ function frame(now) {
       }
       if (y < innerHeight * 1.2) {
         heroInner.style.transform = `translate3d(0, ${y * 0.22}px, 0)`;
+      }
+    }
+    // ghost watermark parallax — drifts against scroll for depth
+    for (const g of ghostEls) {
+      const r = g.parentElement.getBoundingClientRect();
+      if (r.bottom < -200 || r.top > innerHeight + 200) continue;
+      const rel = (r.top + r.height / 2 - innerHeight / 2) / innerHeight;
+      g.style.transform = `translate3d(0, ${(rel * -110).toFixed(1)}px, 0)`;
+    }
+    // magnetic buttons
+    for (const [el, st] of magState) {
+      st.x = damp(st.x, st.tx, 10, dt);
+      st.y = damp(st.y, st.ty, 10, dt);
+      if (Math.abs(st.x) > 0.05 || Math.abs(st.y) > 0.05 || st.tx !== 0 || st.ty !== 0) {
+        el.style.setProperty('--magx', `${st.x.toFixed(2)}px`);
+        el.style.setProperty('--magy', `${st.y.toFixed(2)}px`);
       }
     }
     // cursor
