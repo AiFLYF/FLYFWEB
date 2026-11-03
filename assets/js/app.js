@@ -252,6 +252,9 @@ if (finePointer && !reduced) {
   document.addEventListener('mouseover', (e) => {
     document.body.dataset.cursor = e.target.closest('a, button, [data-hover]') ? 'hover' : '';
   });
+  // tactile press: ring squeezes while the pointer is down
+  window.addEventListener('pointerdown', () => document.body.classList.add('cursor-press'));
+  window.addEventListener('pointerup', () => document.body.classList.remove('cursor-press'));
 }
 
 /* ---------- external-link hints for assistive tech ---------- */
@@ -284,7 +287,7 @@ let skewCur = 0, skewApplied = 0;
 
 const heroInner = document.querySelector('.hero-inner');
 const progressBar = document.getElementById('scrollProgress');
-let heroFaded = false, heroFadeApplied = '', heroShiftApplied = -1;
+let heroFaded = false, heroFadeApplied = '', heroShiftApplied = -1, glowApplied = 1;
 
 /* ============================================================
    THREE.JS — the particle field
@@ -721,7 +724,14 @@ function frame(now) {
   progT = progressFromY(y);
   setActive(activeFromY(y));
   document.body.classList.toggle('scrolled', y > 80);
-  if (progressBar) progressBar.style.transform = `scaleX(${clamp(y / smooth.max, 0, 1)})`;
+  if (progressBar) {
+    progressBar.style.transform = `scaleX(${clamp(y / smooth.max, 0, 1)})`;
+    if (!reduced) {
+      // scroll velocity makes the progress line flare up, then settle
+      const b = 1 + Math.min(Math.abs(vel) * 0.008, 1.6);
+      if (Math.abs(b - glowApplied) > 0.03 || (b === 1 && glowApplied !== 1)) { progressBar.style.filter = `brightness(${b.toFixed(2)})`; glowApplied = b; }
+    }
+  }
 
   if (!reduced) {
     // velocity skew on big type — write only while actually skewing

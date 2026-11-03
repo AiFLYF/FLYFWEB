@@ -258,6 +258,9 @@ body.is-loaded #preloader {
 body.is-loaded .site-head { opacity: 1; transform: none; }
 
 .brand { display: inline-flex; align-items: center; gap: 8px; transition: transform 0.2s var(--ease-out); }
+.brand-word { transition: color 0.35s var(--ease-out); }
+.brand:hover .brand-word { color: var(--acc); }
+.brand:hover .brand-ast { animation-duration: 4s; }
 .brand-ast { width: 18px; height: 18px; color: var(--acc); animation: spin 14s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 .brand-word {
@@ -663,7 +666,8 @@ body.is-loaded [data-load] { opacity: 1; transform: none; }
 .work-foot { display: flex; justify-content: space-between; align-items: center; gap: 20px; padding-top: 24px; color: var(--mut); }
 .work-foot a { display: inline-flex; align-items: center; gap: 8px; color: var(--ink); transition: color .3s var(--ease-out), transform .2s var(--ease-out); }
 .work-foot a:hover { color: var(--acc); }
-.work-foot svg { width: 14px; height: 14px; }
+.work-foot svg { width: 14px; height: 14px; transition: transform 0.35s var(--ease-out); }
+.work-foot a:hover svg { transform: translate(3px, -3px); }
 .rows { border-top: 1px solid var(--line); }
 .row {
   --mx: 50%;
@@ -751,6 +755,8 @@ body.is-loaded [data-load] { opacity: 1; transform: none; }
 .row > svg { width: 26px; height: 26px; color: var(--mut); transition: transform 0.4s var(--ease-out), color 0.3s; }
 .row:hover > * { color: #0a0a0a; }
 .row:hover > svg { color: #0a0a0a; transform: translate(5px, -5px); }
+.row:hover .row-tag, .row:focus-visible .row-tag { transform: translateX(-6px); }
+.row:active h3 { transform: translateX(8px) scale(0.99); }
 
 /* ----- contact ----- */
 
@@ -940,6 +946,7 @@ body[data-cursor="hover"] .c-ring {
   border-color: var(--acc);
   background: rgba(198, 255, 74, 0.12);
 }
+body.cursor-press .c-ring { width: 26px; height: 26px; transition-duration: 0.12s; }
 body.cursor-on .c-dot, body.cursor-on .c-ring { opacity: 1; }
 @media (pointer: fine) {
   body.cursor-on, body.cursor-on a, body.cursor-on button, body.cursor-on .row { cursor: none; }
@@ -1059,6 +1066,7 @@ body.no-webgl .bg-glow {
   .site-nav a { min-height: 42px; display: inline-flex; align-items: center; padding: 10px 14px; border-radius: 999px; color: var(--mut); }
   .site-nav a::after { display: none; }
   .site-nav a.active { color: #070708; background: var(--acc); }
+  .site-nav a:active { background: rgba(198, 255, 74, 0.4); color: #070708; }
   .side-index, .chapter-status { display: none; }
   .sec { padding: 14vh 6vw 10vh; }
   .sec-hero::before {
