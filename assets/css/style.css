@@ -1111,6 +1111,13 @@ body.no-webgl .bg-glow {
   .foot-mid { order: 3; }
 }
 
+/* Very narrow phones: the display face's lower clamp (1.7rem) makes long single
+   words such as PAPERWHISPERER overflow the row and get clipped by its
+   overflow:hidden. Scale the title with the viewport instead. */
+@media (max-width: 380px) {
+  .row h3 { font-size: 7.2vw; }
+}
+
 @media (max-width: 560px) {
   .head-meta > span:nth-child(2) { display: none; }
   .site-nav a { padding: 10px 12px; font-size: 10px; letter-spacing: .08em; }
@@ -1138,6 +1145,11 @@ body.no-webgl .bg-glow {
   .sec-hero { padding-top: max(52px, 9vh); }
   .hero-foot { margin-top: 2vh; gap: 12px; }
   .hero-tech .scroll-hint { display: none; }
+}
+
+/* WCAG 2.5.8: pointer targets should be at least 24px in both axes */
+@media (pointer: fine) {
+  .brand, .chapter-status, .side-index a { min-height: 24px; }
 }
 
 @media (pointer: coarse) {

@@ -58,10 +58,12 @@ class SmoothScroll {
   }
   onScroll() {
     const y = window.scrollY;
-    if (Math.abs(y - this.c) > 2) {         // external scroll (keyboard, hash, touch)
-      this.t = clamp(y, 0, this.max);
-      if (Math.abs(y - this.c) > 200) this.c = y;
-    }
+    if (Math.abs(y - this.c) <= 2) return;
+    // our own damped write is in flight — the event may be a frame stale, ignore it
+    if (Math.abs(this.t - this.c) > 1) return;
+    // at rest, any scroll we did not write came from outside (Tab focus, find-in-page,
+    // scrollbar drag); adopt it outright so the loop cannot drag the page back
+    this.c = this.t = clamp(y, 0, this.max);
   }
   to(y) {
     this.t = clamp(y, 0, this.max);
@@ -129,8 +131,9 @@ window.addEventListener('hashchange', () => {
 window.addEventListener('keydown', (e) => {
   if (e.ctrlKey || e.metaKey || e.altKey) return;
   if (e.target instanceof Element && e.target.closest('input, textarea, [contenteditable]')) return;
-  const n = parseInt(e.key, 10);
-  if (n < 1 || n > 4) return;
+  const n = Number(e.key);
+  // Number() rejects 'Tab'/'a' as NaN, which would slip past the range check below
+  if (!Number.isInteger(n) || n < 1 || n > 4) return;
   const i = n - 1;
   smooth.to(tops[i] + 2);
   const id = sections[i]?.id;
