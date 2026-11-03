@@ -16,6 +16,10 @@
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-io: cubic-bezier(0.83, 0, 0.17, 1);
   --ease-back: cubic-bezier(0.34, 1.56, 0.64, 1);
+  /* 时长令牌：按压 / 微交互 / 悬停 三档；大入场动画不在此列 */
+  --t-press: 0.12s;
+  --t-fast: 0.2s;
+  --t-med: 0.35s;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -276,7 +280,7 @@ body.is-loaded .site-head { opacity: 1; transform: none; }
   position: relative;
   padding: 4px 0;
   color: var(--mut);
-  transition: color 0.35s var(--ease-out), transform 0.2s var(--ease-out);
+  transition: color var(--t-med) var(--ease-out), transform var(--t-fast) var(--ease-out);
 }
 .site-nav a::after {
   content: "";
@@ -900,11 +904,11 @@ body.is-loaded .ht-line.split .ch { transform: translateY(0) rotate(0deg); }
 
 /* ---------- press feedback (:active covers touch, JS drives fine pointers) ---------- */
 
-.btn:active, .hero-cta:active { transform: translateY(-1px) scale(0.97); transition-duration: 0.1s; }
+.btn:active, .hero-cta:active { transform: translateY(-1px) scale(0.97); transition-duration: var(--t-press); }
 .site-nav a:active, .side-index a:active, .brand:active, .work-foot a:active { transform: translateY(1px); }
 .to-top:active { transform: translateY(2px); }
 .contact-email:active { transform: scale(0.985); }
-.row:active::before { transform: scaleY(1); transform-origin: bottom center; transition-duration: 0.18s; }
+.row:active::before { transform: scaleY(1); transform-origin: bottom center; transition-duration: var(--t-fast); }
 .row:active > * { color: #0a0a0a; }
 .row:active > svg { color: #0a0a0a; }
 
@@ -946,7 +950,7 @@ body[data-cursor="hover"] .c-ring {
   border-color: var(--acc);
   background: rgba(198, 255, 74, 0.12);
 }
-body.cursor-press .c-ring { width: 26px; height: 26px; transition-duration: 0.12s; }
+body.cursor-press .c-ring { width: 26px; height: 26px; transition-duration: var(--t-press); }
 body.cursor-on .c-dot, body.cursor-on .c-ring { opacity: 1; }
 @media (pointer: fine) {
   body.cursor-on, body.cursor-on a, body.cursor-on button, body.cursor-on .row { cursor: none; }

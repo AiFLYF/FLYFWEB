@@ -30,7 +30,7 @@ const clockEl = document.getElementById('clock');
 const fmt = new Intl.DateTimeFormat('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
 const tickClock = () => { clockEl.textContent = fmt.format(new Date()); };
 tickClock();
-setInterval(tickClock, 1000);
+let clockTimer = setInterval(tickClock, 1000);
 
 /* ---------- smooth scroll (inertia via wheel hijack) ---------- */
 
@@ -122,6 +122,19 @@ window.addEventListener('hashchange', () => {
   const target = document.getElementById(location.hash.slice(1));
   const i = sections.indexOf(target);
   if (i >= 0) smooth.to(tops[i] + 2);
+});
+
+/* ---------- keyboard chapter shortcuts (1–4) ---------- */
+
+window.addEventListener('keydown', (e) => {
+  if (e.ctrlKey || e.metaKey || e.altKey) return;
+  if (e.target instanceof Element && e.target.closest('input, textarea, [contenteditable]')) return;
+  const n = parseInt(e.key, 10);
+  if (n < 1 || n > 4) return;
+  const i = n - 1;
+  smooth.to(tops[i] + 2);
+  const id = sections[i]?.id;
+  if (id) history.replaceState(null, '', `#${id}`);
 });
 
 let activeIdx = -1;
@@ -797,9 +810,12 @@ rafId = requestAnimationFrame(frame);
 document.addEventListener('visibilitychange', () => {
   if (document.hidden) {
     cancelAnimationFrame(rafId);
+    clearInterval(clockTimer);
   } else {
     last = performance.now();
     rafId = requestAnimationFrame(frame);
+    tickClock();
+    clockTimer = setInterval(tickClock, 1000);
   }
 });
 
