@@ -1050,6 +1050,10 @@ body.no-webgl .bg-glow {
 @media (max-width: 860px) {
   body { padding-bottom: calc(72px + env(safe-area-inset-bottom)); }
   .site-head { mix-blend-mode: normal; padding: max(18px, env(safe-area-inset-top)) 6vw 18px; }
+  /* Below this width the nav is fixed to the viewport. A transformed header would
+     become its containing block, pinning the nav to the header during the load
+     transition — so drop the header transform entirely on mobile. */
+  .js .site-head, body.is-loaded .site-head { transform: none; }
   .site-nav {
     position: fixed;
     left: 50%;

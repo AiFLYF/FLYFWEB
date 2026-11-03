@@ -540,6 +540,7 @@ void main(){
 let renderer, scene, camera, points, uni;
 let progT = 0, progC = 0, glTime = 0, introT = reduced ? 1 : 0;
 let lastRenderSig = '';
+let firstFrameDone = false; // real readiness signal for the preloader
 let hasPointer = false;
 const mouseW = new THREE.Vector3(999, 999, 0); // repulsion parked off-field until first pointer move
 const mouseT = new THREE.Vector3(0, 0, 0);
@@ -669,12 +670,14 @@ function renderGL(dt) {
   }
 
   renderer.render(scene, camera);
+  firstFrameDone = true;
 }
 
 try {
   initGL();
 } catch (err) {
   document.body.classList.add('no-webgl');
+  firstFrameDone = true; // nothing will render, don't hold the preloader hostage
   console.warn('WebGL unavailable:', err);
 }
 
@@ -692,32 +695,50 @@ window.__FLYF__ = {
 
 const preCount = document.getElementById('preCount');
 const preBar = document.getElementById('preBar');
+const prePhase = document.getElementById('prePhase');
 // First visit gets the full intro; repeat visits in the same session fast-forward.
 let seenBefore = false;
 try { seenBefore = sessionStorage.getItem('flyf-seen') === '1'; } catch { /* storage blocked */ }
-const LOAD_MS = reduced ? 200 : seenBefore ? 550 : 1700;
+const MIN_MS = reduced ? 200 : seenBefore ? 550 : 1700;
 const loadStart = performance.now();
 
-function loaderTick(now) {
-  const p = clamp((now - loadStart) / LOAD_MS, 0, 1);
-  const eased = 1 - Math.pow(1 - p, 3);
-  preCount.textContent = String(Math.floor(eased * 100)).padStart(2, '0');
-  preBar.style.transform = `scaleX(${eased})`;
-  if (p < 1) { requestAnimationFrame(loaderTick); return; }
+// The counter reports real boot milestones, never a simulated percentage:
+// 35 = GL booted, +35 = fonts settled, +30 = first frame drawn (or GL unavailable → static).
+let fontsDone = false;
+fontsSettled.then(() => { fontsDone = true; });
+
+function bootMarks() {
+  const pct = 35 + (fontsDone ? 35 : 0) + (firstFrameDone ? 30 : 0);
+  return { pct, glFailed: !glState.ok };
+}
+
+function phaseLabel(glFailed) {
+  if (glFailed) return 'WEBGL UNAVAILABLE · STATIC MODE<br>粒子场不可用，改为静态展示';
+  if (!fontsDone) return 'LOADING FONTS<br>加载字体';
+  if (!firstFrameDone) return 'BUILDING PARTICLE FIELD<br>构建粒子场';
+  return 'READY<br>就绪';
+}
+
+let phaseApplied = '';
+function loaderTick() {
+  const { pct, glFailed } = bootMarks();
+  const phase = phaseLabel(glFailed);
+  if (phase !== phaseApplied) { prePhase.innerHTML = phase; phaseApplied = phase; }
+  preCount.textContent = String(pct).padStart(2, '0');
+  preBar.style.transform = `scaleX(${pct / 100})`;
+  if (pct < 100 || performance.now() - loadStart < MIN_MS) { requestAnimationFrame(loaderTick); return; }
   try { sessionStorage.setItem('flyf-seen', '1'); } catch { /* storage blocked */ }
-  fontsSettled.then(() => {
-    clearTimeout(window.__flyfBootFallback);
-    document.body.classList.add('is-loaded');
-    measureSections();
-    smooth.measure();
-    if (initialTarget) {
-      const i = sections.indexOf(initialTarget);
-      if (i >= 0) {
-        window.scrollTo(0, tops[i]);
-        smooth.t = smooth.c = tops[i];
-      }
+  clearTimeout(window.__flyfBootFallback);
+  document.body.classList.add('is-loaded');
+  measureSections();
+  smooth.measure();
+  if (initialTarget) {
+    const i = sections.indexOf(initialTarget);
+    if (i >= 0) {
+      window.scrollTo(0, tops[i]);
+      smooth.t = smooth.c = tops[i];
     }
-  });
+  }
 }
 requestAnimationFrame(loaderTick);
 
