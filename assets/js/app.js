@@ -167,6 +167,23 @@ function setActive(i) {
   }
 }
 
+/* ---------- chapter indicator: click copies a link to the current section ---------- */
+
+const chapterCopy = document.getElementById('chapterCopy');
+let copyRevertT = 0;
+if (chapterCopy) {
+  chapterCopy.addEventListener('click', async () => {
+    const id = sections[activeIdx]?.id || 'index';
+    const url = `${location.origin}${location.pathname}#${id}`;
+    try { await navigator.clipboard.writeText(url); } catch { /* clipboard blocked — no feedback pretended */ return; }
+    clearTimeout(copyRevertT);
+    chapterName.textContent = 'COPIED';
+    copyRevertT = setTimeout(() => {
+      chapterName.textContent = (sections[activeIdx]?.id || 'index').toUpperCase();
+    }, 900);
+  });
+}
+
 /* ---------- reveal on scroll ---------- */
 
 const io = new IntersectionObserver((entries) => {
@@ -679,6 +696,9 @@ try {
   document.body.classList.add('no-webgl');
   firstFrameDone = true; // nothing will render, don't hold the preloader hostage
   console.warn('WebGL unavailable:', err);
+  // hero stat line must not claim a running particle field in fallback mode
+  const statEl = document.getElementById('statParticles');
+  if (statEl) statEl.closest('p').textContent = 'WEBGL UNAVAILABLE / STATIC FALLBACK';
 }
 
 // debug handle (harmless in production)

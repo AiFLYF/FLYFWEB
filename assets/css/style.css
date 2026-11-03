@@ -235,9 +235,13 @@ body.is-loaded #preloader {
   align-items: center;
   gap: 8px;
   color: var(--ink);
-  pointer-events: none;
+  cursor: pointer;
+  transition: transform var(--t-fast) var(--ease-out);
 }
-.chapter-status #chapterNum { color: var(--acc); }
+.chapter-status:active { transform: translateY(1px); }
+.chapter-status #chapterNum { color: var(--acc); transition: color var(--t-med) var(--ease-out); }
+.chapter-status #chapterName { transition: color var(--t-med) var(--ease-out); }
+.chapter-status:hover #chapterName { color: var(--acc); }
 .chapter-total { color: var(--mut); }
 .chapter-divider { width: 34px; height: 1px; background: var(--line); margin: 0 4px; }
 
