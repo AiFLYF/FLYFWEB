@@ -16,10 +16,11 @@
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-io: cubic-bezier(0.83, 0, 0.17, 1);
   --ease-back: cubic-bezier(0.34, 1.56, 0.64, 1);
-  /* 时长令牌：按压 / 微交互 / 悬停 三档；大入场动画不在此列 */
+  /* 时长令牌：按压 / 微交互 / 悬停 / 大面积填充 四档；大入场动画不在此列 */
   --t-press: 0.12s;
   --t-fast: 0.2s;
   --t-med: 0.35s;
+  --t-slow: 0.45s;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -265,8 +266,8 @@ body.is-loaded #preloader {
 .js .site-head { opacity: 0; transform: translateY(-12px); }
 body.is-loaded .site-head { opacity: 1; transform: none; }
 
-.brand { display: inline-flex; align-items: center; gap: 8px; transition: transform 0.2s var(--ease-out); }
-.brand-word { transition: color 0.35s var(--ease-out); }
+.brand { display: inline-flex; align-items: center; gap: 8px; transition: transform var(--t-fast) var(--ease-out); }
+.brand-word { transition: color var(--t-med) var(--ease-out); }
 .brand:hover .brand-word { color: var(--acc); }
 .brand:hover .brand-ast { animation-duration: 4s; }
 .brand-ast { width: 18px; height: 18px; color: var(--acc); animation: spin 14s linear infinite; }
@@ -296,7 +297,7 @@ body.is-loaded .site-head { opacity: 1; transform: none; }
   background: var(--acc);
   transform: scaleX(0);
   transform-origin: right center;
-  transition: transform 0.45s var(--ease-out);
+  transition: transform var(--t-slow) var(--ease-out);
 }
 .site-nav a:hover, .site-nav a.active { color: var(--ink); }
 .site-nav a:hover::after, .site-nav a.active::after {
@@ -341,12 +342,12 @@ body.is-loaded .side-index { opacity: 1; }
   letter-spacing: 0.14em;
   color: var(--mut);
   text-shadow: 0 1px 10px rgba(4,4,5,.95), 0 0 4px rgba(4,4,5,.9);
-  transition: color 0.35s var(--ease-out), transform 0.2s var(--ease-out);
+  transition: color var(--t-med) var(--ease-out), transform var(--t-fast) var(--ease-out);
 }
 .side-index .si-label {
   opacity: 0;
   transform: translateX(6px);
-  transition: opacity 0.35s, transform 0.35s var(--ease-out);
+  transition: opacity var(--t-med), transform var(--t-med) var(--ease-out);
 }
 .side-index a:hover .si-label,
 .side-index a:focus-visible .si-label,
@@ -417,7 +418,15 @@ body.is-loaded .side-index { opacity: 1; }
   height: 1px;
   flex: 0 0 clamp(40px, 8vw, 120px);
   background: var(--line);
+  transform-origin: left center;
 }
+/* 章节标题右侧的细线随章节进入视口从左展开，作为章节切换的轻量里程碑反馈；
+   不用 JS，复用 data-reveal 的 in-view 类；无 JS 时保持整段可见。 */
+.js .sec-head::after {
+  transform: scaleX(0);
+  transition: transform 0.9s var(--ease-out) 0.1s;
+}
+.js .sec-head.in-view::after { transform: scaleX(1); }
 
 /* ----- hero ----- */
 
@@ -506,11 +515,11 @@ body.is-loaded .ht-line { transform: translateY(0); }
   color: #070708;
   background: var(--acc);
   box-shadow: 0 10px 32px rgba(198,255,74,.16);
-  transition: color .45s, background .45s, border-color .45s, transform .45s var(--ease-out), box-shadow .45s;
+  transition: color var(--t-slow), background var(--t-slow), border-color var(--t-slow), transform var(--t-slow) var(--ease-out), box-shadow var(--t-slow);
 }
 .hero-cta .mono { font-size: 10px; line-height: 1.2; letter-spacing: .12em; white-space: nowrap; }
 .hero-cta .mono br { display: none; }
-.hero-cta svg { width: 16px; height: 16px; transition: transform .4s var(--ease-out); }
+.hero-cta svg { width: 16px; height: 16px; transition: transform var(--t-slow) var(--ease-out); }
 .hero-cta:hover {
   background: var(--ink);
   border-color: var(--ink);
@@ -605,7 +614,7 @@ body.is-loaded [data-load] { opacity: 1; transform: none; }
   -webkit-backdrop-filter: blur(12px);
   backdrop-filter: blur(12px);
   overflow: hidden;
-  transition: border-color .45s, background .45s, transform .45s var(--ease-out);
+  transition: border-color var(--t-slow), background var(--t-slow), transform var(--t-slow) var(--ease-out);
 }
 .cap-card::before {
   content: "";
@@ -613,7 +622,7 @@ body.is-loaded [data-load] { opacity: 1; transform: none; }
   inset: 0;
   background: radial-gradient(320px circle at var(--mx) var(--my), rgba(198,255,74,.12), transparent 62%);
   opacity: 0;
-  transition: opacity .45s;
+  transition: opacity var(--t-slow);
   pointer-events: none;
 }
 .cap-card::after {
@@ -672,9 +681,9 @@ body.is-loaded [data-load] { opacity: 1; transform: none; }
 .work-intro { display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; }
 .work-caption { color: rgba(237,234,226,.66); text-align: right; text-shadow: 0 2px 16px rgba(4,4,5,.95); }
 .work-foot { display: flex; justify-content: space-between; align-items: center; gap: 20px; padding-top: 24px; color: var(--mut); }
-.work-foot a { display: inline-flex; align-items: center; gap: 8px; color: var(--ink); transition: color .3s var(--ease-out), transform .2s var(--ease-out); }
+.work-foot a { display: inline-flex; align-items: center; gap: 8px; color: var(--ink); transition: color var(--t-med) var(--ease-out), transform var(--t-fast) var(--ease-out); }
 .work-foot a:hover { color: var(--acc); }
-.work-foot svg { width: 14px; height: 14px; transition: transform 0.35s var(--ease-out); }
+.work-foot svg { width: 14px; height: 14px; transition: transform var(--t-med) var(--ease-out); }
 .work-foot a:hover svg { transform: translate(3px, -3px); }
 .rows { border-top: 1px solid var(--line); }
 .row {
@@ -704,12 +713,12 @@ body.is-loaded [data-load] { opacity: 1; transform: none; }
   inset: 0;
   background: radial-gradient(420px circle at var(--mx) var(--my), rgba(255,255,255,.34), transparent 65%);
   opacity: 0;
-  transition: opacity .4s;
+  transition: opacity var(--t-slow);
   pointer-events: none;
 }
 .row:hover::before, .row:focus-visible::before { transform: scaleY(1); transform-origin: bottom center; }
 .row:hover::after { opacity: 1; }
-.row > * { position: relative; z-index: 1; transition: color 0.3s, transform .45s var(--ease-out); }
+.row > * { position: relative; z-index: 1; transition: color var(--t-med), transform var(--t-slow) var(--ease-out); }
 .row:focus-visible > * { color: #0a0a0a; }
 .row:focus-visible .live { color: #0a0a0a; }
 .row:hover h3, .row:focus-visible h3 { transform: translateX(8px); }
@@ -736,7 +745,7 @@ body.is-loaded [data-load] { opacity: 1; transform: none; }
   background: rgba(7,7,8,.74);
   -webkit-backdrop-filter: blur(12px);
   backdrop-filter: blur(12px);
-  transition: background .3s, border-color .3s, color .3s;
+  transition: background var(--t-med), border-color var(--t-med), color var(--t-med);
 }
 .row:hover .row-tag, .row:focus-visible .row-tag { background: transparent; border-color: rgba(10,10,10,.2); }
 .live {
@@ -749,7 +758,7 @@ body.is-loaded [data-load] { opacity: 1; transform: none; }
   letter-spacing: 0.18em;
   color: var(--acc);
   white-space: nowrap;
-  transition: color 0.3s;
+  transition: color var(--t-med);
 }
 .live::before {
   content: "";
@@ -760,7 +769,7 @@ body.is-loaded [data-load] { opacity: 1; transform: none; }
   box-shadow: 0 0 8px currentColor;
 }
 .row:hover .live { color: #0a0a0a; }
-.row > svg { width: 26px; height: 26px; color: var(--mut); transition: transform 0.4s var(--ease-out), color 0.3s; }
+.row > svg { width: 26px; height: 26px; color: var(--mut); transition: transform var(--t-med) var(--ease-out), color var(--t-med); }
 .row:hover > * { color: #0a0a0a; }
 .row:hover > svg { color: #0a0a0a; transform: translate(5px, -5px); }
 .row:hover .row-tag, .row:focus-visible .row-tag { transform: translateX(-6px); }
@@ -784,9 +793,9 @@ body.is-loaded [data-load] { opacity: 1; transform: none; }
   font-size: clamp(18px, 2vw, 30px);
   font-weight: 500;
   text-shadow: 0 2px 16px rgba(4,4,5,.9);
-  transition: color .35s var(--ease-out), border-color .35s var(--ease-out), background .35s var(--ease-out), transform .15s var(--ease-out);
+  transition: color var(--t-med) var(--ease-out), border-color var(--t-med) var(--ease-out), background var(--t-med) var(--ease-out), transform var(--t-press) var(--ease-out);
 }
-.contact-email svg { width: .8em; height: .8em; color: var(--acc); transition: transform .35s var(--ease-out); }
+.contact-email svg { width: .8em; height: .8em; color: var(--acc); transition: transform var(--t-med) var(--ease-out); }
 .contact-email:hover { color: var(--acc); border-color: var(--acc); }
 .contact-email:hover svg { transform: translate(4px, -4px); }
 .cta-row {
@@ -808,7 +817,7 @@ body.is-loaded [data-load] { opacity: 1; transform: none; }
   text-transform: uppercase;
   background: var(--ink);
   color: #0a0a0a;
-  transition: background 0.4s var(--ease-out), color 0.4s, border-color 0.4s, transform 0.4s var(--ease-out);
+  transition: background var(--t-slow) var(--ease-out), color var(--t-slow), border-color var(--t-slow), transform var(--t-slow) var(--ease-out);
 }
 .btn svg { width: 16px; height: 16px; }
 .btn:hover { background: var(--acc); border-color: var(--acc); transform: translateY(-3px); }
@@ -838,9 +847,9 @@ body.is-loaded [data-load] { opacity: 1; transform: none; }
   font-size: 11px;
   letter-spacing: 0.14em;
   color: var(--ink);
-  transition: transform .2s var(--ease-out);
+  transition: transform var(--t-fast) var(--ease-out);
 }
-.to-top svg { width: 14px; height: 14px; color: var(--acc); transition: transform 0.35s var(--ease-out); }
+.to-top svg { width: 14px; height: 14px; color: var(--acc); transition: transform var(--t-med) var(--ease-out); }
 .to-top:hover svg { transform: translateY(-4px); }
 
 /* ---------- ghost watermark words ---------- */
@@ -891,7 +900,7 @@ body.is-loaded .ht-line.split .ch { transform: translateY(0) rotate(0deg); }
 .js .st-line.split.in-view .ch { opacity: 1; transform: translateY(0) rotate(0deg); }
 
 /* work rows: char ripple on hover */
-.row h3 .ch { transform-origin: left bottom; transition: transform 0.45s var(--ease-back) var(--cd, 0s); }
+.row h3 .ch { transform-origin: left bottom; transition: transform var(--t-slow) var(--ease-back) var(--cd, 0s); }
 .row:hover h3 .ch, .row:focus-visible h3 .ch { transform: translateY(-0.07em) rotate(2deg); }
 
 /* ---------- reveal on scroll ---------- */
@@ -918,7 +927,7 @@ body.is-loaded .ht-line.split .ch { transform: translateY(0) rotate(0deg); }
 
 /* while JS drives magnetic transforms on fine pointers, CSS must not double-smooth them */
 body.cursor-on .btn, body.cursor-on .hero-cta {
-  transition: background 0.4s var(--ease-out), color 0.4s, border-color 0.4s, box-shadow 0.45s;
+  transition: background var(--t-slow) var(--ease-out), color var(--t-slow), border-color var(--t-slow), box-shadow var(--t-slow);
 }
 
 /* ---------- chapter indicator roll ---------- */
@@ -927,7 +936,7 @@ body.cursor-on .btn, body.cursor-on .hero-cta {
   0% { transform: translateY(75%); opacity: 0; }
   100% { transform: translateY(0); opacity: 1; }
 }
-.chapter-status .roll { animation: chRoll 0.45s var(--ease-out); }
+.chapter-status .roll { animation: chRoll var(--t-slow) var(--ease-out); }
 
 /* ---------- cursor ---------- */
 
@@ -946,7 +955,7 @@ body.cursor-on .btn, body.cursor-on .hero-cta {
   width: 38px;
   height: 38px;
   border: 1px solid rgba(237, 234, 226, 0.65);
-  transition: width 0.35s var(--ease-out), height 0.35s var(--ease-out), border-color 0.35s, background 0.35s;
+  transition: width var(--t-med) var(--ease-out), height var(--t-med) var(--ease-out), border-color var(--t-med), background var(--t-med);
 }
 body[data-cursor="hover"] .c-ring {
   width: 64px;
@@ -1171,6 +1180,14 @@ body.no-webgl .bg-glow {
   .js .ht-line.split .ch, .js .st-line.split .ch { opacity: 1; transform: none; }
   .row:hover h3 .ch, .row:focus-visible h3 .ch { transform: none; }
   .marquee-track, .brand-ast { animation: none; }
-  .hero-cta:hover { transform: none; }
-  .row:hover h3, .row:focus-visible h3, .cap-card:hover { transform: none; }
+  /* 位移类反馈在 reduced 下并不会消失：上面的过渡只把时长压到 0.01ms，
+     悬停/按压仍会瞬间跳到位移终态。逐项归零，只保留颜色、边框与底色反馈。 */
+  .hero-cta:hover, .btn:hover, .btn-ghost:hover, .cap-card:hover,
+  .row:hover h3, .row:focus-visible h3, .row:active h3,
+  .row:hover .row-tag, .row:focus-visible .row-tag,
+  .site-nav a:active, .side-index a:active, .brand:active,
+  .work-foot a:active, .to-top:active, .contact-email:active,
+  .chapter-status:active { transform: none !important; }
+  .hero-cta:hover svg, .work-foot a:hover svg, .contact-email:hover svg,
+  .to-top:hover svg, .row:hover > svg { transform: none !important; }
 }
